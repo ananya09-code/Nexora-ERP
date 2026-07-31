@@ -1,0 +1,81 @@
+import Link from "next/link";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+} from "@/components/ui/sidebar";
+
+export function AppSidebar() {
+  return (
+    <Sidebar>
+
+      <SidebarHeader>
+        <h2 className="text-xl font-bold">
+          Nexora ERP
+        </h2>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarGroup>
+
+          <SidebarGroupLabel>
+            Main
+          </SidebarGroupLabel>
+
+          <SidebarGroupContent>
+
+            <SidebarMenu>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton >
+                  <Link href="/dashboard">
+                    Dashboard
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton >
+                  <Link href="/dashboard/products">
+                    Products
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton >
+                  <Link href="/dashboard/customers">
+                    Customers
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton>
+                  <Link href="/dashboard/orders">
+                    Orders
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+            </SidebarMenu>
+
+          </SidebarGroupContent>
+
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter>
+        Signed in as Admin
+      </SidebarFooter>
+
+    </Sidebar>
+  );
+}
