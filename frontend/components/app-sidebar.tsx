@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Button } from "./ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -17,7 +18,7 @@ export function AppSidebar() {
     <Sidebar>
 
       <SidebarHeader>
-        <h2 className="text-xl font-bold">
+        <h2 className="text-xl text-blue-700 font-bold">
           Nexora ERP
         </h2>
       </SidebarHeader>
@@ -73,7 +74,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
-        Signed in as Admin
+
       </SidebarFooter>
 
     </Sidebar>

@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
+import { Appheader } from "@/components/app-header";
 import {
   SidebarProvider,
   SidebarTrigger,
@@ -11,17 +12,18 @@ export default function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
-
       <AppSidebar />
 
-      <main className="flex-1">
+      <div className="flex min-h-screen flex-1 flex-col">
+        <header className="flex h-16 items-center border-b px-4">
+          <SidebarTrigger />
+          <Appheader />
+        </header>
 
-        <SidebarTrigger />
-
-        {children}
-
-      </main>
-
+        <main className="flex-1 p-6">
+          {children}
+        </main>
+      </div>
     </SidebarProvider>
   );
 }
