@@ -60,6 +60,15 @@ export function AppSidebar() {
 
               <SidebarMenuItem>
                 <SidebarMenuButton>
+                  <Link href="/dashboard/Suppliers">
+                    Suppliers
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+
+              <SidebarMenuItem>
+                <SidebarMenuButton>
                   <Link href="/dashboard/orders">
                     Orders
                   </Link>

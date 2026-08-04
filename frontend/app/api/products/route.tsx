@@ -1,12 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-
-export async function GET(){
+export async function GET() {
 
   const products = await prisma.product.findMany({
-    include:{
-      category:true
+    include: {
+      category: true
     }
   });
 
@@ -37,7 +36,6 @@ export async function POST(req: Request) {
     return NextResponse.json(product, {
       status: 201,
     });
-
 
   } catch (error) {
 

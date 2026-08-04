@@ -19,12 +19,9 @@ type Product = {
   name: string;
   sku: string;
   barcode: string | null;
-  description: string;
+  description: string | null;
   price: number;
   costPrice: number;
-  stock: number;
-  minStock: number;
-  unit: string;
   categoryId: string;
   createdAt: string;
   updatedAt: string;
@@ -36,27 +33,32 @@ type Product = {
 };
 
 
+
 export function ProductTable() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProduct, setLoadingProduct] = useState(true);
 
 
+
   useEffect(() => {
 
-    async function fetchProduct() {
+    async function fetchProducts() {
 
       try {
 
         const res = await fetch("/api/products");
 
+
         if (!res.ok) {
           throw new Error("Failed to fetch products");
         }
 
+
         const data: Product[] = await res.json();
 
         setProducts(data);
+
 
       } catch (error) {
 
@@ -71,9 +73,11 @@ export function ProductTable() {
     }
 
 
-    fetchProduct();
+    fetchProducts();
 
   }, []);
+
+
 
 
   if (loadingProduct) {
@@ -81,44 +85,73 @@ export function ProductTable() {
   }
 
 
+
+
   return (
+
     <Table>
+
 
       <TableCaption>
         Product Catalog
       </TableCaption>
 
 
+
       <TableHeader>
+
         <TableRow>
 
-          <TableHead>Name</TableHead>
-
-          <TableHead>SKU</TableHead>
-
-          <TableHead>Category</TableHead>
-
-          <TableHead>Stock</TableHead>
-
-          <TableHead>Unit</TableHead>
-
-          <TableHead className="text-right">
-            Price
+          <TableHead>
+            Name
           </TableHead>
 
+
+          <TableHead>
+            SKU
+          </TableHead>
+
+
+          <TableHead>
+            Barcode
+          </TableHead>
+
+
+          <TableHead>
+            Category
+          </TableHead>
+
+
+          <TableHead>
+            Cost Price
+          </TableHead>
+
+
+          <TableHead className="text-right">
+            Selling Price
+          </TableHead>
+
+
         </TableRow>
+
       </TableHeader>
 
 
+
+
+
       <TableBody>
+
 
         {products.map((product) => (
 
           <TableRow key={product.id}>
 
+
             <TableCell className="font-medium">
               {product.name}
             </TableCell>
+
 
 
             <TableCell>
@@ -126,30 +159,40 @@ export function ProductTable() {
             </TableCell>
 
 
+
+            <TableCell>
+              {product.barcode || "-"}
+            </TableCell>
+
+
+
             <TableCell>
               {product.category.name}
             </TableCell>
 
 
-            <TableCell>
-              {product.stock}
-            </TableCell>
-
 
             <TableCell>
-              {product.unit}
+              {product.costPrice}
             </TableCell>
+
 
 
             <TableCell className="text-right">
               {product.price}
             </TableCell>
 
+
+
           </TableRow>
 
         ))}
 
+
       </TableBody>
+
+
+
 
 
       <TableFooter>
@@ -165,10 +208,15 @@ export function ProductTable() {
             {products.length}
           </TableCell>
 
+
         </TableRow>
 
       </TableFooter>
 
+
+
     </Table>
+
   );
+
 }

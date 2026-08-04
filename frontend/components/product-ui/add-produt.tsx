@@ -9,8 +9,8 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import {useForm,SubmitHandler} from "react-hook-form"
-import {z} from "zod"
+import { useForm, SubmitHandler } from "react-hook-form"
+import { z } from "zod"
 import {
   Field,
   FieldGroup,
@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -47,7 +47,7 @@ type Category = {
   id: string;
   name: string;
 };
-type ProudctForm=z.infer<typeof form>
+type ProudctForm = z.infer<typeof form>
 export function AddProductDialog() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
@@ -55,82 +55,84 @@ export function AddProductDialog() {
   const [error, setError] = useState("");
   useEffect(() => {
 
-  async function fetchCategories() {
+    async function fetchCategories() {
+
+      try {
+        const res = await fetch("/api/categories");
+
+        const data = await res.json();
+
+        setCategories(data);
+
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoadingCategories(false);
+      }
+
+    }
+
+
+    fetchCategories();
+
+  }, []);
+
+
+
+
+
+
+
+
+
+  const { register, handleSubmit, control, formState: { isSubmitting } } = useForm<ProudctForm>({
+    defaultValues: {
+      name: "",
+      sku: "",
+      categoryId: "",
+      price: 0,
+      costPrice: 0,
+      description: "",
+    },
+  })
+  const onSubmit: SubmitHandler<ProudctForm> = async (data) => {
+    setSuccess("");
+    setError("");
 
     try {
-      const res = await fetch("/api/categories");
+      const res = await fetch("/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-      const data = await res.json();
+      const result = await res.json();
 
-      setCategories(data);
+      if (!res.ok) {
+        throw new Error(result.message || "Failed to add product");
+      }
+
+      setSuccess("Product added successfully!");
+
+      console.log(result);
 
     } catch (error) {
-      console.log(error);
-    } finally {
-      setLoadingCategories(false);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong"
+      );
     }
-
-  }
-
-
-  fetchCategories();
-
-}, []);
-
-
-
-
-
-
-
-
-
- const {register,handleSubmit,control,formState:{isSubmitting}}=useForm<ProudctForm>({ defaultValues: {
-    name: "",
-    sku: "",
-    categoryId: "",   
-    price: 0,
-    costPrice: 0,
-    description: "",
-  },})
-const onSubmit: SubmitHandler<ProudctForm> = async (data) => {
-  setSuccess("");
-  setError("");
-
-  try {
-    const res = await fetch("/api/products", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const result = await res.json();
-
-    if (!res.ok) {
-      throw new Error(result.message || "Failed to add product");
-    }
-
-    setSuccess("Product added successfully!");
-
-    console.log(result);
-
-  } catch (error) {
-    setError(
-      error instanceof Error 
-        ? error.message 
-        : "Something went wrong"
-    );
-  }
-}; 
+  };
   return (
     <Dialog>
-<DialogTrigger
-  render={
-    <Button
-      variant="outline"
-      className="
+      <DialogTrigger
+        render={
+          <Button
+            variant="outline"
+            className="
         bg-blue-500 
         text-white 
         border-blue-500
@@ -138,11 +140,11 @@ const onSubmit: SubmitHandler<ProudctForm> = async (data) => {
         hover:text-white
         transition-colors
       "
-    >
-      Add Product
-    </Button>
-  }
-/>
+          >
+            Add Product
+          </Button>
+        }
+      />
 
 
       <DialogContent className="sm:max-w-md">
@@ -154,18 +156,18 @@ const onSubmit: SubmitHandler<ProudctForm> = async (data) => {
               Add Product
             </DialogTitle>
             {success && (
-  <div className="mt-4 flex items-center gap-2 rounded-md bg-green-50 p-3 text-sm text-green-700">
-    <CheckCircle size={18} />
-    {success}
-  </div>
-)}
+              <div className="mt-4 flex items-center gap-2 rounded-md bg-green-50 p-3 text-sm text-green-700">
+                <CheckCircle size={18} />
+                {success}
+              </div>
+            )}
 
-  {error && (
-  <div className="mt-4 flex items-center gap-2 rounded-md bg-red-50 p-3 text-sm text-red-700">
-    <XCircle size={18} />
-    {error}
-  </div>
-)}
+            {error && (
+              <div className="mt-4 flex items-center gap-2 rounded-md bg-red-50 p-3 text-sm text-red-700">
+                <XCircle size={18} />
+                {error}
+              </div>
+            )}
 
             <DialogDescription>
               Add a new product to the system.
@@ -203,45 +205,45 @@ const onSubmit: SubmitHandler<ProudctForm> = async (data) => {
                 {...register("sku")}
               />
             </Field>
-<Field>
-  <Label>
-    Category
-  </Label>
-<Controller
-  name="categoryId"
-  control={control}
-  render={({ field }) => (
-    <Select
-      value={field.value}
-      onValueChange={field.onChange}
-    >
+            <Field>
+              <Label>
+                Category
+              </Label>
+              <Controller
+                name="categoryId"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  >
 
-      <SelectTrigger>
-        <SelectValue placeholder="Select category" />
-      </SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
 
-      <SelectContent>
-        {loadingCategories ? (
-          <SelectItem value="loading" disabled>
-            Loading categories...
-          </SelectItem>
-        ) : (
-          categories.map((category) => (
-            <SelectItem
-              key={category.id}
-              value={category.id}
-            >
-              {category.name}
-            </SelectItem>
-          ))
-        )}
-      </SelectContent>
+                    <SelectContent>
+                      {loadingCategories ? (
+                        <SelectItem value="loading" disabled>
+                          Loading categories...
+                        </SelectItem>
+                      ) : (
+                        categories.map((category) => (
+                          <SelectItem
+                            key={category.id}
+                            value={category.id}
+                          >
+                            {category.name}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
 
-    </Select>
-  )}
-/>
+                  </Select>
+                )}
+              />
 
-</Field>
+            </Field>
 
 
             {/* Selling Price */}
@@ -269,7 +271,7 @@ const onSubmit: SubmitHandler<ProudctForm> = async (data) => {
               </Label>
 
               <Input
-              
+
                 {...register("costPrice")}
                 id="costPrice"
                 name="costPrice"
@@ -309,17 +311,17 @@ const onSubmit: SubmitHandler<ProudctForm> = async (data) => {
 
 
 
-           <DialogFooter className="mt-6">
+          <DialogFooter className="mt-6">
 
-  <DialogClose
-    render={
-      <Button variant="outline">
-        Cancel
-      </Button>
-    }
-  />
+            <DialogClose
+              render={
+                <Button variant="outline">
+                  Cancel
+                </Button>
+              }
+            />
 
-  <Button className="
+            <Button className="
         bg-blue-500 
         text-white 
         border-blue-500
@@ -327,10 +329,10 @@ const onSubmit: SubmitHandler<ProudctForm> = async (data) => {
         hover:text-white
         transition-colors
       " disabled={isSubmitting} type="submit">
-    {isSubmitting?"adding product...":"Add Product"}
-  </Button>
+              {isSubmitting ? "adding product..." : "Add Product"}
+            </Button>
 
-</DialogFooter> 
+          </DialogFooter>
 
 
         </form>
