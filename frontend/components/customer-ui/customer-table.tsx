@@ -11,44 +11,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { useEffect, useState } from "react";
 
-type Customer = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  address: string;
-  email: string;
-};
-
+import { useCustomers } from "@/hooks/use-customer";
 export function CustomerTable() {
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loadingCustomers, setLoadingCustomers] = useState(true);
+  const {
+    data: customers = [],
+    isLoading,
+    error,
+  } = useCustomers()
 
-  useEffect(() => {
-    async function fetchCustomers() {
-      try {
-        const res = await fetch("/api/customers");
+  if (isLoading) {
+    return <p>Loading products...</p>;
+  }
 
-        if (!res.ok) {
-          throw new Error("Failed to fetch customers");
-        }
-
-        const data: Customer[] = await res.json();
-        setCustomers(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoadingCustomers(false);
-      }
-    }
-
-    fetchCustomers();
-  }, []);
-
-  if (loadingCustomers) {
-    return <p>Loading customers...</p>;
+  if (error) {
+    return <p>Failed to load products.</p>;
   }
 
   return (

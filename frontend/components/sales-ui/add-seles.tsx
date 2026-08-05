@@ -1,0 +1,635 @@
+"use client";
+
+import type { Product } from "@/lib/api/products";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+
+import { useState } from "react";
+import { useProducts } from "@/hooks/use-products";
+import { useCustomers } from "@/hooks/use-customer";
+export function AddSales() {
+  const [selectedProduct, setSelectedProduct] = useState("");
+  const [totalProduct, setTotalProduct] = useState<Product[]>([])
+  const {
+    data: products = [],
+    isLoading: productLoading,
+  } = useProducts();
+  const { data: customers = [],
+    isLoading: customerLoading,
+  } = useCustomers();
+
+
+
+
+
+
+  console.log(totalProduct);
+
+  return (
+
+    <Dialog>
+
+
+      <DialogTrigger >
+
+        <Button>
+          New Sale
+        </Button>
+
+      </DialogTrigger>
+
+
+
+
+
+      <DialogContent
+        className="
+        w-[95vw]
+        min-w-[1500px]
+        max-h-[90vh]
+        overflow-y-auto
+        "
+      >
+
+
+        <DialogHeader>
+
+          <DialogTitle className="text-2xl">
+            Create New Sale
+          </DialogTitle>
+
+
+          <DialogDescription>
+            Create a new customer order and update inventory.
+          </DialogDescription>
+
+
+        </DialogHeader>
+
+
+
+
+
+
+        <div
+          className="
+          grid
+          gap-8
+          lg:grid-cols-[1fr_380px]
+          mt-6
+          "
+        >
+
+
+
+
+          {/* LEFT SIDE */}
+
+
+          <div className="space-y-8">
+
+
+
+
+
+            {/* CUSTOMER */}
+
+
+            <Card>
+
+
+              <CardHeader>
+
+                <CardTitle>
+                  Customer
+                </CardTitle>
+
+
+                <CardDescription>
+                  Select customer for this sale.
+                </CardDescription>
+
+
+              </CardHeader>
+              <CardContent>
+                <Select>
+                  <SelectTrigger className="w-full">
+
+                    <SelectValue
+                      placeholder="Select Customer"
+                    />
+
+                  </SelectTrigger>
+
+
+
+
+                  <SelectContent>
+
+
+                    {customerLoading ? <h1>Loading......</h1> : customers.map((customer) => (
+
+                      <SelectItem
+                        key={customer.id}
+                        value={customer.id}
+                      >
+
+                        {customer.firstName}
+
+                      </SelectItem>
+
+                    ))}
+
+
+                  </SelectContent>
+
+
+                </Select>
+
+
+
+              </CardContent>
+
+
+            </Card>
+
+
+
+
+
+
+
+            {/* PRODUCTS */}
+
+
+
+            <Card>
+
+
+              <CardHeader>
+
+                <CardTitle>
+                  Products
+                </CardTitle>
+
+
+                <CardDescription>
+                  Add products to sale.
+                </CardDescription>
+
+
+              </CardHeader>
+
+
+
+
+
+              <CardContent className="space-y-5">
+
+
+
+                <Select
+                  value={selectedProduct}
+                  onValueChange={(value) => {
+                    setSelectedProduct(value || "");
+                    const product = products.find(
+                      (item) => item.id === value
+                    );
+
+                    if (product) {
+
+                      const alreadyExists = totalProduct.some(
+                        (item) => item.id === product.id
+                      );
+
+                      if (!alreadyExists) {
+                        setTotalProduct([
+                          ...totalProduct,
+                          product
+                        ]);
+                      }
+
+                    }
+                  }}
+                >
+
+
+                  <SelectTrigger className="w-full">
+
+                    <SelectValue
+                      placeholder="Select Product"
+                    />
+
+                  </SelectTrigger>
+
+
+
+
+                  <SelectContent>
+                    {productLoading ? <h1>loading.......</h1> : (products.map((product) => (
+
+                      <SelectItem
+                        key={product.id}
+                        value={product.id}
+                      >
+
+                        {product.name}
+
+                      </SelectItem>
+
+                    )))}
+
+
+                  </SelectContent>
+
+
+                </Select>
+
+
+
+
+
+
+
+                <div className="border rounded-lg overflow-x-auto">
+
+
+                  <Table className="min-w-[800px]">
+
+
+                    <TableHeader>
+
+
+                      <TableRow>
+
+
+                        <TableHead>
+                          Product
+                        </TableHead>
+
+
+                        <TableHead>
+                          Price
+                        </TableHead>
+
+
+                        <TableHead>
+                          Quantity
+                        </TableHead>
+
+
+                        <TableHead>
+                          Total
+                        </TableHead>
+
+
+                        <TableHead className="text-right">
+                          Action
+                        </TableHead>
+
+
+                      </TableRow>
+
+
+                    </TableHeader>
+
+
+
+
+
+                    <TableBody>
+
+
+                      {
+                        totalProduct.map((product) => {
+                          return (
+                            <TableRow
+                              key={product.id}
+                            >
+
+
+                              <TableCell>
+
+                                {product.name}
+
+                              </TableCell>
+
+
+
+
+
+                              <TableCell>
+
+                                {product.costPrice}
+
+                              </TableCell>
+
+
+
+
+
+                              <TableCell className="w-32">
+
+
+                                <Input
+                                  type="number"
+                                  defaultValue={1}
+                                />
+
+
+                              </TableCell>
+
+
+
+
+
+                              <TableCell>
+
+                                $450
+
+                              </TableCell>
+
+
+
+
+
+                              <TableCell className="text-right">
+                                <Button
+                                  variant="destructive"
+                                  onClick={() => {
+                                    setTotalProduct(
+                                      totalProduct.filter(
+                                        (item) => item.id !== product.id
+                                      )
+                                    );
+                                  }}
+                                >
+                                  Remove
+                                </Button>
+                              </TableCell>
+
+
+
+
+                            </TableRow>)
+
+                        })}
+
+
+
+
+                    </TableBody>
+
+
+                  </Table>
+
+
+                </div>
+
+
+              </CardContent>
+
+
+            </Card>
+
+
+
+          </div>
+
+
+
+
+
+
+
+
+          {/* RIGHT SIDE SUMMARY */}
+
+
+
+
+
+          <Card className="h-fit sticky top-5">
+
+
+            <CardHeader>
+
+
+              <CardTitle>
+                Order Summary
+              </CardTitle>
+
+
+
+              <CardDescription>
+                Review before completing sale.
+              </CardDescription>
+
+
+            </CardHeader>
+
+
+
+
+
+            <CardContent className="space-y-5">
+
+
+
+
+
+              <div className="flex justify-between">
+
+                <span>
+                  Items
+                </span>
+
+
+                <span>
+                  0
+                </span>
+
+
+              </div>
+
+
+
+
+
+
+
+              <div className="flex justify-between">
+
+
+                <span>
+                  Subtotal
+                </span>
+
+
+
+                <span>
+
+                  $450
+
+                </span>
+
+
+              </div>
+
+
+
+
+
+
+              <div className="flex justify-between">
+
+
+                <span>
+                  Tax
+                </span>
+
+
+                <span>
+                  $0
+                </span>
+
+
+              </div>
+
+
+
+
+
+              <Separator />
+
+
+
+
+
+
+
+              <div
+                className="
+                flex
+                justify-between
+                text-xl
+                font-bold
+                "
+              >
+
+                <span>
+                  Total
+                </span>
+
+
+                <span>
+                  $450
+                </span>
+
+
+              </div>
+
+
+
+
+
+
+
+              <Button
+                className="w-full h-12 text-base"
+              >
+
+                Complete Sale
+
+              </Button>
+
+
+
+            </CardContent>
+
+
+
+          </Card>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <DialogFooter className="mt-8">
+
+
+          <DialogClose >
+
+
+            <Button variant="outline">
+
+              Cancel
+
+            </Button>
+
+
+          </DialogClose>
+
+
+
+        </DialogFooter>
+
+
+
+
+
+      </DialogContent>
+
+
+
+
+
+    </Dialog>
+
+  );
+}

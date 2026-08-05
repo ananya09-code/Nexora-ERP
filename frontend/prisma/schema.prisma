@@ -8,15 +8,16 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String   @id
   name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false)
+  email         String   @unique
+  emailVerified Boolean  @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  accounts      Account[]
-  sessions      Session[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  accounts Account[]
+  sessions Session[]
 
   @@map("user")
 }
@@ -27,76 +28,98 @@ model Session {
   token     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   ipAddress String?
   userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("session")
 }
 
 model Account {
-  id                    String    @id
-  accountId             String
-  providerId            String
-  userId                String
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
+  id         String @id
+  accountId  String
+  providerId String
+  userId     String
+
+  accessToken  String?
+  refreshToken String?
+  idToken      String?
+
   accessTokenExpiresAt  DateTime?
   refreshTokenExpiresAt DateTime?
-  scope                 String?
-  password              String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  scope    String?
+  password String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("account")
 }
 
 model Verification {
-  id         String   @id
+  id String @id
+
   identifier String
   value      String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([identifier])
   @@map("verification")
 }
 
 model Category {
-  id          String    @id @default(cuid())
-  name        String    @unique
+  id String @id @default(cuid())
+
+  name String @unique
+
   description String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  products    Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products Product[]
 }
 
 model Product {
   id String @id @default(cuid())
 
-  name        String
-  sku         String  @unique
-  barcode     String? @unique
+  name String
+
+  sku String @unique
+
+  barcode String?
+
   description String?
 
-  price     Float
-  costPrice Float
+  price Float
+
+  costPrice Float?
 
   categoryId String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
   category Category @relation(fields: [categoryId], references: [id])
 
-  inventory     Inventory?
+  inventory Inventory?
+
+  saleItems SaleItem[]
+
   purchaseItems PurchaseItem[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
 }
 
 model Inventory {
@@ -104,28 +127,33 @@ model Inventory {
 
   productId String @unique
 
-  quantity Int    @default(0)
-  minStock Int    @default(0)
-  unit     String @default("pcs")
+  quantity Int @default(0)
+
+  minStock Int @default(0)
+
+  unit String @default("pcs")
 
   createdAt DateTime @default(now())
+
   updatedAt DateTime @updatedAt
 
   product Product @relation(fields: [productId], references: [id])
 }
 
-model PurchaseItem {
+model Supplier {
   id String @id @default(cuid())
 
-  purchaseId String
-  productId  String
+  name String
 
-  quantity  Int
-  costPrice Float
+  contactPerson String?
 
-  purchase Purchase @relation(fields: [purchaseId], references: [id])
+  email String? @unique
 
-  product Product @relation(fields: [productId], references: [id])
+  phone String?
+
+  address String?
+
+  purchases Purchase[]
 }
 
 model Purchase {
@@ -136,6 +164,7 @@ model Purchase {
   totalAmount Float @default(0)
 
   createdAt DateTime @default(now())
+
   updatedAt DateTime @updatedAt
 
   supplier Supplier @relation(fields: [supplierId], references: [id])
@@ -143,29 +172,72 @@ model Purchase {
   items PurchaseItem[]
 }
 
+model PurchaseItem {
+  id String @id @default(cuid())
+
+  purchaseId String
+
+  productId String
+
+  quantity Int
+
+  costPrice Float
+
+  purchase Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+
+  product Product @relation(fields: [productId], references: [id])
+}
+
 model Customer {
   id String @id @default(cuid())
 
   firstName String
-  lastName  String
+
+  lastName String
 
   email String? @unique
+
   phone String?
 
   address String?
 
+  sales Sale[]
+
   createdAt DateTime @default(now())
+
   updatedAt DateTime @updatedAt
 }
 
-model Supplier {
-  id            String  @id @default(cuid())
-  name          String
-  contactPerson String?
+model Sale {
+  id String @id @default(cuid())
 
-  email   String? @unique
-  phone   String?
-  address String?
+  customerId String
 
-  purchases Purchase[]
+  totalAmount Float
+
+  status String @default("completed")
+
+  customer Customer @relation(fields: [customerId], references: [id])
+
+  items SaleItem[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+model SaleItem {
+  id String @id @default(cuid())
+
+  saleId String
+
+  productId String
+
+  quantity Int
+
+  price Float
+
+  sale Sale @relation(fields: [saleId], references: [id], onDelete: Cascade)
+
+  product Product @relation(fields: [productId], references: [id])
 }
