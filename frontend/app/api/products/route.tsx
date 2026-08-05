@@ -17,22 +17,27 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
 
-    const body = await req.json();
-
-    console.log(body);
+    const data = await req.json();
 
     const product = await prisma.product.create({
       data: {
-        name: body.name,
-        sku: body.sku,
-        description: body.description,
-        price: Number(body.price),
-        costPrice: Number(body.costPrice),
-        categoryId: body.categoryId,
+        name: data.name,
+        sku: data.sku,
+        barcode: data.barcode,
+        description: data.description,
+        price: data.price,
+        costPrice: data.costPrice,
+        categoryId: data.categoryId,
+
+        inventory: {
+          create: {
+            quantity: 0,
+            minStock: 5,
+            unit: "pcs",
+          },
+        },
       },
     });
-
-
     return NextResponse.json(product, {
       status: 201,
     });

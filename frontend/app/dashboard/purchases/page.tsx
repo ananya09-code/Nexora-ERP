@@ -1,7 +1,6 @@
-import AddSupplier from "@/components/Suppliers/add-Suppliers"
-import { SupplierTable } from "@/components/Suppliers/suppliertable"
-export default function SupplierPage() {
-
+import { AddPurchase } from "@/components/purchases-ui/add-purchase"
+import { PurchaseTable } from "@/components/purchases-ui/PurchaseTable"
+export default function purchasePage() {
   return (
     <div className="w-full space-y-6">
 
@@ -9,17 +8,17 @@ export default function SupplierPage() {
 
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            Suppliers Cataloag
+            Purchase Catalog
           </h1>
 
           <p className="mt-1 text-sm text-slate-500">
-            Manage your Suppliers.
+            Manage your products, inventory, and pricing.
           </p>
-        </div>
 
-        <AddSupplier />
+        </div>
+        <AddPurchase />
       </div>
-      <SupplierTable />
+      <PurchaseTable />
     </div>
 
   )

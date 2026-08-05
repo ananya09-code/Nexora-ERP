@@ -57,6 +57,14 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton>
+                  <Link href="/dashboard/inventory">
+                    inventory
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
 
               <SidebarMenuItem>
                 <SidebarMenuButton>
@@ -65,6 +73,14 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton>
+                  <Link href="/dashboard/purchases">
+                    Purchases</Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
 
 
               <SidebarMenuItem>

@@ -95,7 +95,8 @@ model Product {
 
   category Category @relation(fields: [categoryId], references: [id])
 
-  inventory Inventory?
+  inventory     Inventory?
+  purchaseItems PurchaseItem[]
 }
 
 model Inventory {
@@ -111,6 +112,35 @@ model Inventory {
   updatedAt DateTime @updatedAt
 
   product Product @relation(fields: [productId], references: [id])
+}
+
+model PurchaseItem {
+  id String @id @default(cuid())
+
+  purchaseId String
+  productId  String
+
+  quantity  Int
+  costPrice Float
+
+  purchase Purchase @relation(fields: [purchaseId], references: [id])
+
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model Purchase {
+  id String @id @default(cuid())
+
+  supplierId String
+
+  totalAmount Float @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  supplier Supplier @relation(fields: [supplierId], references: [id])
+
+  items PurchaseItem[]
 }
 
 model Customer {
@@ -137,6 +167,5 @@ model Supplier {
   phone   String?
   address String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  purchases Purchase[]
 }
