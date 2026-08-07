@@ -27,7 +27,7 @@ export function CustomerTable() {
   if (error) {
     return <p>Failed to load products.</p>;
   }
-
+  console.log(customers)
   return (
     <Table>
       <TableCaption>Customer List</TableCaption>

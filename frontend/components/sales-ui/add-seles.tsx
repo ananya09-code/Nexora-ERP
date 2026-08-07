@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckCircle, XCircle } from "lucide-react";
 import type { Product } from "@/lib/api/products";
 import {
   Dialog,
@@ -37,30 +38,122 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+
+import type { Sales } from "@/lib/api/sales";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-
+import { useCreateSales } from "@/hooks/use-sales";
 import { useState } from "react";
 import { useProducts } from "@/hooks/use-products";
 import { useCustomers } from "@/hooks/use-customer";
 export function AddSales() {
+
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+
+
   const [selectedProduct, setSelectedProduct] = useState("");
   const [totalProduct, setTotalProduct] = useState<Product[]>([])
+  const [selectedcustomer, setSelectedCustomer] = useState("")
+  const [quantitys, setQuantity] = useState<Record<string, number>>({});
+
+
+
+
   const {
     data: products = [],
     isLoading: productLoading,
   } = useProducts();
+
+
+
   const { data: customers = [],
     isLoading: customerLoading,
   } = useCustomers();
 
+  const { mutate, isPending } = useCreateSales()
+
+
+
+  const subtotal = totalProduct.reduce((sum, product) => {
+    const quantity = quantitys[product.id] ?? 1;
+    return sum + quantity * product.costPrice;
+  }, 0);
+
+
+
+  const totalQuantity = Object.values(quantitys).reduce(
+    (sum, quantity) => sum + quantity,
+    0
+  );
+
+
+  function reset() {
+    setSelectedCustomer("")
+    setTotalProduct([])
+    setQuantity({})
+    setSelectedProduct("")
+  }
+
+
+  const items = totalProduct.map((product) => ({
+    productId: product.id,
+    quantity: quantitys[product.id] ?? 1,
+    price: product.costPrice,
+  }));
+
+
+  const data = {
+    customerId: selectedcustomer,
+    status: 'completed',
+    item: items,
+
+  }
+
+
+  function onSubmit(data: Sales) {
+
+
+    setSuccess("");
+    setError("");
+
+    mutate(
+
+      data
+      ,
+      {
+
+        onSuccess() {
+
+          setSuccess(
+            "Sales created successfully"
+          );
+
+          reset();
+
+        },
+
+
+        onError(error) {
+
+          setError(
+            error.message
+          );
+
+        },
+
+
+      }
+
+
+    );
+
+  }
 
 
 
 
-
-  console.log(totalProduct);
 
   return (
 
@@ -101,6 +194,24 @@ export function AddSales() {
           </DialogDescription>
 
 
+          {success && (
+            <div className="flex gap-2 items-center rounded-md bg-green-50 p-3 text-green-700">
+              <CheckCircle size={18} />
+              {success}
+            </div>
+          )}
+
+
+          {error && (
+            <div className="flex gap-2 items-center rounded-md bg-red-50 p-3 text-red-700">
+              <XCircle size={18} />
+              {error}
+            </div>
+          )}
+
+
+
+
         </DialogHeader>
 
 
@@ -116,9 +227,6 @@ export function AddSales() {
           mt-6
           "
         >
-
-
-
 
           {/* LEFT SIDE */}
 
@@ -149,7 +257,12 @@ export function AddSales() {
 
               </CardHeader>
               <CardContent>
-                <Select>
+                <Select value={selectedcustomer}
+                  onValueChange={(value) =>
+                    setSelectedCustomer(value ?? "")
+                  }
+
+                >
                   <SelectTrigger className="w-full">
 
                     <SelectValue
@@ -169,9 +282,10 @@ export function AddSales() {
                       <SelectItem
                         key={customer.id}
                         value={customer.id}
+
                       >
 
-                        {customer.firstName}
+                        {`${customer.firstName} ${customer.lastName}`}
 
                       </SelectItem>
 
@@ -244,6 +358,10 @@ export function AddSales() {
                           ...totalProduct,
                           product
                         ]);
+                        setQuantity((prev) => ({
+                          ...prev,
+                          [product.id]: 1,
+                        }));
                       }
 
                     }
@@ -370,7 +488,14 @@ export function AddSales() {
 
                                 <Input
                                   type="number"
-                                  defaultValue={1}
+                                  min={1}
+                                  value={quantitys[product.id] ?? 1}
+                                  onChange={(e) =>
+                                    setQuantity((prev) => ({
+                                      ...prev,
+                                      [product.id]: Number(e.target.value),
+                                    }))
+                                  }
                                 />
 
 
@@ -381,9 +506,7 @@ export function AddSales() {
 
 
                               <TableCell>
-
-                                $450
-
+                                {(quantitys[product.id] ?? 1) * product.costPrice}
                               </TableCell>
 
 
@@ -397,8 +520,11 @@ export function AddSales() {
                                     setTotalProduct(
                                       totalProduct.filter(
                                         (item) => item.id !== product.id
-                                      )
-                                    );
+                                      ));
+                                    setQuantity((prev) => {
+                                      const { [product.id]: _, ...rest } = prev;
+                                      return rest;
+                                    });
                                   }}
                                 >
                                   Remove
@@ -483,7 +609,7 @@ export function AddSales() {
 
 
                 <span>
-                  0
+                  {totalQuantity}
                 </span>
 
 
@@ -506,8 +632,7 @@ export function AddSales() {
 
                 <span>
 
-                  $450
-
+                  {subtotal}
                 </span>
 
 
@@ -560,7 +685,7 @@ export function AddSales() {
 
 
                 <span>
-                  $450
+                  {`$${subtotal}`}
                 </span>
 
 
@@ -574,9 +699,11 @@ export function AddSales() {
 
               <Button
                 className="w-full h-12 text-base"
+                onClick={
+                  () => onSubmit(data)
+                } variant="outline"
               >
-
-                Complete Sale
+                {isPending ? "Commpleting sale ...." : "Complete Sale"}
 
               </Button>
 
@@ -606,7 +733,7 @@ export function AddSales() {
           <DialogClose >
 
 
-            <Button variant="outline">
+            <Button onClick={() => { setSuccess(""); setError("") }}>
 
               Cancel
 

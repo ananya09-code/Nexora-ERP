@@ -47,8 +47,6 @@ export async function GET() {
 
 
 
-
-
 // CREATE PURCHASE
 export async function POST(req: Request) {
 

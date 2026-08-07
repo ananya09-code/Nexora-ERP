@@ -1,4 +1,6 @@
 import { AddSales } from "@/components/sales-ui/add-seles"
+import { SalesSummaryCards } from "@/components/sales-ui/sales-card"
+import { SalesTable } from "@/components/sales-ui/selestable"
 export default function SalesPage() {
   return (
 
@@ -18,6 +20,11 @@ export default function SalesPage() {
         <AddSales />
       </div>
 
+
+      <SalesSummaryCards />
+
+
+      <SalesTable />
     </div>
 
   )
