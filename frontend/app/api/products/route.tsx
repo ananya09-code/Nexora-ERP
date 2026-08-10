@@ -1,18 +1,75 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
 
-export async function GET() {
+    const search = searchParams.get("search");
+    const categoryId = searchParams.get("categoryId");
+    const productId = searchParams.get("productId");
+    const minPrice = searchParams.get("minPrice");
+    const maxPrice = searchParams.get("maxPrice");
 
-  const products = await prisma.product.findMany({
-    include: {
-      category: true
-    }
-  });
+    const products = await prisma.product.findMany({
+      where: {
+        ...(productId && {
+          id: productId,
+        }),
 
-  return NextResponse.json(products);
+        ...(categoryId && {
+          categoryId,
+        }),
+
+        ...(search && {
+          OR: [
+            {
+              name: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+            {
+              sku: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+          ],
+        }),
+
+        ...(minPrice && {
+          price: {
+            gte: Number(minPrice),
+          },
+        }),
+
+        ...(maxPrice && {
+          price: {
+            lte: Number(maxPrice),
+          },
+        }),
+      },
+
+      include: {
+        category: true,
+        inventory: true,
+      },
+
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return NextResponse.json(products);
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      { error: "Failed to fetch products" },
+      { status: 500 }
+    );
+  }
 }
-
-
 
 export async function POST(req: Request) {
   try {

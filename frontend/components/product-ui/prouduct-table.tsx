@@ -10,14 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useProducts } from "@/hooks/use-products";
 
-export function ProductTable() {
-  const {
-    data: products = [],
-    isLoading,
-    error,
-  } = useProducts();
+export function ProductTable({ data, isLoading, error }: any) {
 
   if (isLoading) {
     return <p>Loading products...</p>;
@@ -82,7 +76,7 @@ export function ProductTable() {
       <TableBody>
 
 
-        {products.map((product) => (
+        {data.map((product: any) => (
 
           <TableRow key={product.id}>
 
@@ -144,7 +138,7 @@ export function ProductTable() {
 
 
           <TableCell className="text-right">
-            {products.length}
+            {data.length}
           </TableCell>
 
 

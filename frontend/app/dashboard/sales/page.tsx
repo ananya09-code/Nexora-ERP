@@ -1,6 +1,7 @@
 import { AddSales } from "@/components/sales-ui/add-seles"
 import { SalesSummaryCards } from "@/components/sales-ui/sales-card"
 import { SalesTable } from "@/components/sales-ui/selestable"
+import { FilterCard } from "@/components/app-filter"
 export default function SalesPage() {
   return (
 
@@ -23,7 +24,7 @@ export default function SalesPage() {
 
       <SalesSummaryCards />
 
-
+      <FilterCard pagetype="sales" />
       <SalesTable />
     </div>
 

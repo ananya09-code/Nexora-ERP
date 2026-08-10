@@ -1,5 +1,6 @@
 import { AddPurchase } from "@/components/purchases-ui/add-purchase"
 import { PurchaseTable } from "@/components/purchases-ui/PurchaseTable"
+import { FilterCard } from "@/components/app-filter"
 export default function purchasePage() {
   return (
     <div className="w-full space-y-6">
@@ -18,6 +19,7 @@ export default function purchasePage() {
         </div>
         <AddPurchase />
       </div>
+      <FilterCard pagetype="purchases" />
       <PurchaseTable />
     </div>
 
