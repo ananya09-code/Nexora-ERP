@@ -13,13 +13,7 @@ import {
 
 
 import { useSuppliers } from "@/hooks/use-supplier";
-export function SupplierTable() {
-  const {
-    data: suppliers = [],
-    isLoading,
-    error,
-  } = useSuppliers()
-
+export function SupplierTable({ isLoading, error, suppliers }: any) {
   if (isLoading) {
     return <p>Loading products...</p>;
   }
@@ -45,7 +39,7 @@ export function SupplierTable() {
       </TableHeader>
 
       <TableBody>
-        {suppliers.map((supplier) => (
+        {suppliers.map((supplier: any) => (
           <TableRow key={supplier.id}>
             <TableCell className="font-medium">
               {supplier.name}
@@ -78,4 +72,23 @@ export function SupplierTable() {
       </TableFooter>
     </Table>
   );
+}
+import { FilterCard } from "../app-filter";
+import { useState } from "react";
+export function SupplierUi() {
+
+  const [filterValues, setFilterValues] = useState({});
+  const {
+    data: suppliers = [],
+    isLoading,
+    error,
+  } = useSuppliers(filterValues)
+
+
+  return (
+    <div className="w-full space-y-6">
+      <FilterCard pagetype="suppliers" onApply={setFilterValues} />
+      <SupplierTable suppliers={suppliers} isLoading={isLoading} error={error} />
+    </div>
+  )
 }

@@ -1,6 +1,5 @@
 import AddCustomer from "@/components/customer-ui/add-Customer"
-import { CustomerTable } from "@/components/customer-ui/customer-table"
-import { FilterCard } from "@/components/app-filter"
+import { CustomerUi } from "@/components/customer-ui/customer-table"
 export default function CustomerPage() {
 
   return (
@@ -19,8 +18,7 @@ export default function CustomerPage() {
         </div>
         <AddCustomer />
       </div>
-      <FilterCard pagetype="customers" />
-      <CustomerTable />
+      <CustomerUi />
     </div>
   )
 

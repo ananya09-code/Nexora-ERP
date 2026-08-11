@@ -16,13 +16,33 @@ export type SupplierForm = {
   address?: string;
 };
 
-
+import { SupplierFilters } from "@/hooks/use-supplier";
 
 // GET SUPPLIERS
 
-export async function getSuppliers(): Promise<Supplier[]> {
+export async function getSuppliers(filters?: SupplierFilters) {
+  const params = new URLSearchParams();
 
-  const res = await fetch("/api/suppliers");
+  if (filters?.search) {
+    params.set("search", filters.search);
+  }
+
+  if (filters?.suppliersId) {
+    params.set("supplierid", filters.suppliersId);
+  }
+
+  if (filters?.email) {
+    params.set("email", filters.email);
+  }
+
+  if (filters?.createdAt) {
+    params.set("createdat", filters.createdAt);
+  }
+
+
+
+
+  const res = await fetch(`/api/suppliers?${params.toString()}`);
 
 
   if (!res.ok) {

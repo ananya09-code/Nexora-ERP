@@ -13,17 +13,23 @@ import {
   CustomerForm,
 } from "@/lib/api/customer";
 
-
+export type CustomerFilters = {
+  search?: string;
+  customerId?: string;
+  email?: string;
+  createdAt?:
+  string;
+};
 
 // GET CUSTOMERS
 
-export function useCustomers() {
+export function useCustomers(filter?: CustomerFilters) {
 
   return useQuery({
 
-    queryKey: ["customers"],
+    queryKey: ["customers", filter],
 
-    queryFn: getCustomers,
+    queryFn: () => getCustomers(filter),
 
   });
 

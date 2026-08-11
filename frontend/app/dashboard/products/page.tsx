@@ -1,14 +1,7 @@
-"use client";
 import { AddProductDialog } from "@/components/product-ui/add-produt"
-import { ProductTable } from "@/components/product-ui/prouduct-table"
-import { FilterCard } from "@/components/app-filter"
-import { useState } from "react";
-import { useProducts } from "@/hooks/use-products";
+import { ProductUi } from "@/components/product-ui/prouduct-table"
 export default function ProductPage() {
-  const [filterValues, setFilterValues] = useState({});
 
-  const { data: products = [], isPending, error } =
-    useProducts(filterValues);
   return (
     <div className="w-full space-y-6">
 
@@ -25,10 +18,8 @@ export default function ProductPage() {
         </div>
 
         <AddProductDialog />
-
       </div>
-      <FilterCard pagetype="products" onApply={setFilterValues} />
-      <ProductTable data={products} isLoading={isPending} error={error} />
+      <ProductUi />
     </div>
   )
 }

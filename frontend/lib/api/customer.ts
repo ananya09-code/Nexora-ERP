@@ -15,12 +15,31 @@ export type CustomerForm = {
   phone?: string;
   address?: string;
 };
-
+import { CustomerFilters } from "@/hooks/use-customer";
 
 // GET CUSTOMERS
-export async function getCustomers(): Promise<Customer[]> {
+export async function getCustomers(filters?: CustomerFilters) {
+  const params = new URLSearchParams();
 
-  const res = await fetch("/api/customers");
+  if (filters?.search) {
+    params.set("search", filters.search);
+  }
+
+  if (filters?.customerId) {
+    params.set("customerId", filters.customerId);
+  }
+
+  if (filters?.email) {
+    params.set("email", filters.email);
+  }
+
+  if (filters?.createdAt) {
+    params.set("createdAt", filters.createdAt);
+  }
+
+
+
+  const res = await fetch(`/api/customers/?${params.toString()}`);
 
   if (!res.ok) {
     throw new Error("Failed to fetch customers");

@@ -1,3 +1,4 @@
+import { ProductFilters } from "@/hooks/use-products";
 export type Product = {
   id: string;
   name: string;
@@ -22,9 +23,36 @@ export type ProductForm = {
   description?: string;
 };
 
-// GET PRODUCTS
-export async function getProducts(): Promise<Product[]> {
-  const res = await fetch("/api/products");
+export async function getProducts(filters?: ProductFilters) {
+  const params = new URLSearchParams();
+
+  if (filters?.search) {
+    params.set("search", filters.search);
+  }
+
+  if (filters?.categoryId) {
+    params.set("categoryId", filters.categoryId);
+  }
+
+  if (filters?.productId) {
+    params.set("productId", filters.productId);
+  }
+
+  if (filters?.minPrice !== undefined) {
+    params.set("minPrice", String(filters.minPrice));
+  }
+
+  if (filters?.maxPrice !== undefined) {
+    params.set("maxPrice", String(filters.maxPrice));
+  }
+
+  if (filters?.createdAt) {
+    params.set("createdAt", filters.createdAt);
+  }
+
+  const res = await fetch(
+    `/api/products?${params.toString()}`
+  );
 
   if (!res.ok) {
     throw new Error("Failed to fetch products");
@@ -32,7 +60,6 @@ export async function getProducts(): Promise<Product[]> {
 
   return res.json();
 }
-
 // CREATE PRODUCT
 export async function createProduct(data: ProductForm): Promise<Product> {
   const res = await fetch("/api/products", {

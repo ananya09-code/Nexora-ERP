@@ -13,18 +13,23 @@ import {
   createSupplier,
   SupplierForm,
 } from "@/lib/api/supplier";
-
+export type SupplierFilters = {
+  search?: string;
+  suppliersId?: string;
+  email?: string;
+  createdAt?: string;
+};
 
 
 // GET SUPPLIERS
 
-export function useSuppliers() {
+export function useSuppliers(filters?: SupplierFilters) {
 
   return useQuery({
 
-    queryKey: ["suppliers"],
+    queryKey: ["suppliers", filters],
 
-    queryFn: getSuppliers,
+    queryFn: () => getSuppliers(filters),
 
   });
 

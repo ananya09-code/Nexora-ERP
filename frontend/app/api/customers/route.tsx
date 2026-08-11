@@ -1,9 +1,55 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+
+  const search = searchParams.get("search");
+  const customerId = searchParams.get("customerId");
+  const email = searchParams.get("email");
+  const createdAt = searchParams.get("createdAt");
+
+
   try {
     const customers = await prisma.customer.findMany({
+      where: {
+        ...(customerId && {
+          id: customerId,
+        }),
+
+        ...(email && {
+          email: email,
+        }),
+
+        ...(search && {
+          OR: [
+            {
+              firstName: {
+                contains: search,
+                mode: "insensitive",
+              },
+
+              lastName: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+            {
+              email: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+          ],
+        }),
+        ...(createdAt && {
+          createdAt: {
+            gte: new Date(createdAt),
+          },
+        }),
+      },
+
+
       orderBy: {
         createdAt: "desc",
       },

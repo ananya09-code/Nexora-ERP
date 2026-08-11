@@ -18,29 +18,9 @@ export type ProductFilters = {
 export function useProducts(filters?: ProductFilters) {
   return useQuery({
     queryKey: ["products", filters],
-    queryFn: async () => {
-      const params = new URLSearchParams();
-
-      Object.entries(filters ?? {}).forEach(([key, value]) => {
-        if (value !== undefined && value !== "") {
-          params.set(key, String(value));
-        }
-      });
-
-      const response = await fetch(
-        `/api/products?${params.toString()}`
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch products");
-      }
-
-      return response.json();
-    },
+    queryFn: () => getProducts(filters)
   });
 }
-
-
 
 export function useCreateProduct() {
   const queryClient = useQueryClient();

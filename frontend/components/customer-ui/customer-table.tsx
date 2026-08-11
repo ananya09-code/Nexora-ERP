@@ -13,13 +13,7 @@ import {
 
 
 import { useCustomers } from "@/hooks/use-customer";
-export function CustomerTable() {
-  const {
-    data: customers = [],
-    isLoading,
-    error,
-  } = useCustomers()
-
+export function CustomerTable({ isLoading, error, customers }: any) {
   if (isLoading) {
     return <p>Loading products...</p>;
   }
@@ -43,7 +37,7 @@ export function CustomerTable() {
       </TableHeader>
 
       <TableBody>
-        {customers.map((customer) => (
+        {customers.map((customer: any) => (
           <TableRow key={customer.id}>
             <TableCell>{customer.firstName}</TableCell>
             <TableCell>{customer.lastName}</TableCell>
@@ -62,4 +56,22 @@ export function CustomerTable() {
       </TableFooter>
     </Table>
   );
+}
+import { useState } from "react";
+import { FilterCard } from "@/components/app-filter"
+export function CustomerUi() {
+  const [filterValues, setFilterValues] = useState({});
+  const {
+    data: customers = [],
+    isLoading,
+    error,
+  } = useCustomers(filterValues)
+
+  return (
+    <div className="w-full space-y-6">
+      <FilterCard pagetype="customers" onApply={setFilterValues} />
+      <CustomerTable customers={customers} isLoading={isLoading} error={error} />
+    </div>
+  )
+
 }

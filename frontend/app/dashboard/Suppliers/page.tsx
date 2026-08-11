@@ -1,7 +1,5 @@
 import AddSupplier from "@/components/Suppliers/add-Suppliers"
-import { SupplierTable } from "@/components/Suppliers/suppliertable"
-
-import { FilterCard } from "@/components/app-filter"
+import { SupplierUi } from "@/components/Suppliers/suppliertable"
 export default function SupplierPage() {
 
   return (
@@ -21,8 +19,7 @@ export default function SupplierPage() {
 
         <AddSupplier />
       </div>
-      <FilterCard pagetype="suppliers" />
-      <SupplierTable />
+      <SupplierUi />
     </div>
 
   )

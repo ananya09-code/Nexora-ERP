@@ -25,16 +25,13 @@ export function Searchinput() {
       </InputGroupAddon>
     </InputGroup>
   );
-}
-
-
-export function Appheader() {
+} export function Appheader() {
   return (
     <div className="flex flex-1 items-center">
-        <div className="hidden md:block">
-      <Searchinput /></div>
+      <div className="hidden md:block">
+        <Searchinput /></div>
       <div className="ml-auto">
-        <UserNav/>
+        <UserNav />
       </div>
     </div>
   );

@@ -1,25 +1,29 @@
 // filters.ts
-
 export const filters = {
   products: [
     {
-      key: "category",
+      key: "categoryId",
       label: "Category",
       type: "select",
       options: [],
       dynamic: true,
     },
     {
-      key: "product",
+      key: "productId",
       label: "Product",
       type: "select",
       options: [],
       dynamic: true,
     },
     {
-      key: "price",
-      label: "Price",
-      type: "range",
+      key: "minPrice",
+      label: "Min price",
+      type: "number",
+    },
+    {
+      key: "maxPrice",
+      label: "Max price",
+      type: "number",
     },
     {
       key: "createdAt",
@@ -30,13 +34,6 @@ export const filters = {
 
   categories: [
     {
-      key: "category",
-      label: "Category",
-      type: "select",
-      options: [],
-      dynamic: true,
-    },
-    {
       key: "createdAt",
       label: "Created date",
       type: "date",
@@ -45,17 +42,17 @@ export const filters = {
 
   inventory: [
     {
-      key: "stock",
+      key: "stockStatus",
       label: "Stock status",
       type: "select",
       options: [
-        "In stock",
-        "Low stock",
-        "Out of stock",
+        "in-stock",
+        "low-stock",
+        "out-of-stock",
       ],
     },
     {
-      key: "product",
+      key: "productId",
       label: "Product",
       type: "select",
       options: [],
@@ -77,7 +74,7 @@ export const filters = {
 
   suppliers: [
     {
-      key: "supplier",
+      key: "supplierId",
       label: "Supplier",
       type: "select",
       options: [],
@@ -97,7 +94,7 @@ export const filters = {
 
   customers: [
     {
-      key: "customer",
+      key: "customerId",
       label: "Customer",
       type: "select",
       options: [],
@@ -127,23 +124,28 @@ export const filters = {
       ],
     },
     {
-      key: "customer",
+      key: "customerId",
       label: "Customer",
       type: "select",
       options: [],
       dynamic: true,
     },
     {
-      key: "product",
+      key: "productId",
       label: "Product",
       type: "select",
       options: [],
       dynamic: true,
     },
     {
-      key: "amount",
-      label: "Total amount",
-      type: "range",
+      key: "minAmount",
+      label: "Min amount",
+      type: "number",
+    },
+    {
+      key: "maxAmount",
+      label: "Max amount",
+      type: "number",
     },
     {
       key: "createdAt",
@@ -154,23 +156,28 @@ export const filters = {
 
   purchases: [
     {
-      key: "supplier",
+      key: "supplierId",
       label: "Supplier",
       type: "select",
       options: [],
       dynamic: true,
     },
     {
-      key: "product",
+      key: "productId",
       label: "Product",
       type: "select",
       options: [],
       dynamic: true,
     },
     {
-      key: "amount",
-      label: "Total amount",
-      type: "range",
+      key: "minAmount",
+      label: "Min amount",
+      type: "number",
+    },
+    {
+      key: "maxAmount",
+      label: "Max amount",
+      type: "number",
     },
     {
       key: "createdAt",
@@ -178,4 +185,5 @@ export const filters = {
       type: "date",
     },
   ],
-};
+} as const;
+;
