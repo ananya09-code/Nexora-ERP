@@ -1,13 +1,81 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 
 // GET ALL PURCHASES
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+
+  const search = searchParams.get("search");
+  const supplierId = searchParams.get("supplierId");
+  const productId = searchParams.get("productId");
+  const minAmount = searchParams.get("minAmount");
+  const maxAmount = searchParams.get("maxAmount");
+
 
   try {
-
     const purchases = await prisma.purchase.findMany({
+      where: {
+        ...(productId && {
+          items: {
+            some: {
+              productId,
+            },
+          },
+        }),
+
+        ...(supplierId && {
+          supplierId,
+        }),
+
+        ...(search && {
+          OR: [
+            {
+              supplier: {
+                name: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+            },
+            {
+              items: {
+                some: {
+                  product: {
+                    name: {
+                      contains: search,
+                      mode: "insensitive",
+                    },
+                  },
+                },
+              },
+            },
+            {
+              items: {
+                some: {
+                  product: {
+                    sku: {
+                      contains: search,
+                      mode: "insensitive",
+                    },
+                  },
+                },
+              },
+            },
+          ],
+        }),
+
+        ...((minAmount || maxAmount) && {
+          totalAmount: {
+            ...(minAmount && {
+              gte: Number(minAmount),
+            }),
+            ...(maxAmount && {
+              lte: Number(maxAmount),
+            }),
+          },
+        }),
+      },
 
       include: {
         supplier: true,
@@ -22,9 +90,7 @@ export async function GET() {
       orderBy: {
         createdAt: "desc",
       },
-
     });
-
 
     return NextResponse.json(purchases);
 

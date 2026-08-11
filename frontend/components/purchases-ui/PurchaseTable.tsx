@@ -19,19 +19,7 @@ import { usePurchases } from "@/hooks/use-purchase";
 
 
 
-export function PurchaseTable() {
-
-
-  const {
-    data: purchases = [],
-    isLoading,
-    error,
-
-  } = usePurchases();
-
-
-
-
+export function PurchaseTable({ isLoading, error, purchases }: any) {
 
   if (isLoading) {
 
@@ -118,7 +106,7 @@ export function PurchaseTable() {
 
 
         {
-          purchases.map((purchase) => (
+          purchases.map((purchase: any) => (
 
 
             <TableRow
@@ -230,6 +218,26 @@ export function PurchaseTable() {
 
 
   );
+}
+import { FilterCard } from "@/components/app-filter"
+import { useState } from "react";
+export function PurchaseUi() {
 
+  const [filterValues, setFilterValues] = useState({});
+  const {
+    data: purchases = [],
+    isLoading,
+    error,
+
+  } = usePurchases(filterValues);
+
+  return (
+    <div className="flex flex-col gap-4">
+      <FilterCard pagetype="purchases" onApply={setFilterValues} />
+      <PurchaseTable isLoading={isLoading} error={error} purchases={purchases} />
+
+    </div>
+  )
 
 }
+

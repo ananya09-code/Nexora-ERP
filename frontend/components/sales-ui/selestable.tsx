@@ -11,13 +11,7 @@ import {
 } from "@/components/ui/table";
 import { useSales } from "@/hooks/use-sales";
 
-export function SalesTable() {
-  const {
-    data: sales = [],
-    isLoading,
-    error,
-  } = useSales();
-
+export function SalesTable({ isLoading, error, sales }: any) {
   if (isLoading) {
     return <p>Loading sales...</p>;
   }
@@ -75,4 +69,22 @@ export function SalesTable() {
       </TableBody>
     </Table>
   );
+}
+import { FilterCard } from "@/components/app-filter";
+import { useState } from "react";
+export function SalesUi() {
+  const [filterValues, setFilterValues] = useState({});
+  const {
+    data: sales = [],
+    isLoading,
+    error,
+  } = useSales(filterValues);
+
+
+  return (
+    <div className="w-full space-y-6">
+      <FilterCard pagetype="sales" onApply={setFilterValues} />
+      <SalesTable isLoading={isLoading} error={error} sales={sales} />
+    </div>
+  )
 }

@@ -10,23 +10,30 @@ import {
   createPurchase,
   PurchaseForm,
 } from "@/lib/api/purchase";
-
+export type PurchaseFilters = {
+  search?: string;
+  supplierId?: string;
+  productId?: string;
+  minAmount?: number;
+  maxAmount?: number;
+  createdAt?: string;
+};
 
 
 
 
 // Fetch purchases
 
-export function usePurchases() {
+export function usePurchases(filters: PurchaseFilters) {
 
 
   return useQuery({
 
 
-    queryKey: ["purchases"],
+    queryKey: ["purchases", filters],
 
 
-    queryFn: getPurchases,
+    queryFn: () => getPurchases(filters),
 
 
   });

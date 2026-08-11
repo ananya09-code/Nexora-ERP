@@ -10,9 +10,36 @@ export interface Sales {
   status: string;
   item: SaleItem[];
 }
-export async function getSales() {
+import { SaleFilters } from "@/hooks/use-sales";
+export async function getSales(filters: SaleFilters) {
+  const params = new URLSearchParams();
 
-  const res = await fetch("/api/sales")
+  if (filters?.search) {
+    params.set("search", filters.search);
+  }
+
+  if (filters?.productId) {
+    params.set("productId", filters.productId);
+  }
+
+  if (filters?.customerId) {
+    params.set("customerId", filters.customerId);
+  }
+
+  if (filters?.minAmount !== undefined) {
+    params.set("minAmount", String(filters.minAmount));
+  }
+
+  if (filters?.minAmount !== undefined) {
+    params.set("maxAmount", String(filters.maxAmount));
+  }
+
+  if (filters?.createdAt) {
+    params.set("createdAt", filters.createdAt);
+  }
+
+
+  const res = await fetch(`/api/sales?${params.toString()}`)
   if (!res.ok) {
     throw new Error(
       "Failed to fetch purchases")

@@ -40,16 +40,42 @@ export type PurchaseForm = {
 
 };
 
-
+import { PurchaseFilters } from "@/hooks/use-purchase";
 
 
 
 // Get all purchases
 
-export async function getPurchases(): Promise<Purchase[]> {
+export async function getPurchases(filters: PurchaseFilters): Promise<Purchase[]> {
+  const params = new URLSearchParams();
+
+  if (filters?.search) {
+    params.set("search", filters.search);
+  }
+
+  if (filters?.productId) {
+    params.set("productId", filters.productId);
+  }
+
+  if (filters?.supplierId) {
+    params.set("supplierId", filters.supplierId);
+  }
+
+  if (filters?.minAmount !== undefined) {
+    params.set("minAmount", String(filters.minAmount));
+  }
+
+  if (filters?.minAmount !== undefined) {
+    params.set("maxAmount", String(filters.maxAmount));
+  }
+
+  if (filters?.createdAt) {
+    params.set("createdAt", filters.createdAt);
+  }
 
 
-  const res = await fetch("/api/purchases");
+
+  const res = await fetch(`/api/purchases?${params.toString()}`);
 
 
   if (!res.ok) {

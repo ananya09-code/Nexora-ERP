@@ -1,25 +1,120 @@
 import { prisma } from "@/lib/prisma";
+import { NextResponse, NextRequest } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+
+  const search = searchParams.get("search");
+  const customerId = searchParams.get("customerId");
+  const productId = searchParams.get("productId");
+  const minAmount = searchParams.get("minAmount");
+  const maxAmount = searchParams.get("maxAmount");
+  const createdAt = searchParams.get("createdAt");
 
 
-export async function GET() {
   try {
+
     const sales = await prisma.sale.findMany({
+      where: {
+        // Customer filter
+        ...(customerId && {
+          customerId,
+        }),
+
+        // Product filter
+        ...(productId && {
+          items: {
+            some: {
+              productId,
+            },
+          },
+        }),
+
+        // Statu    ...(status && {status,}),
+
+        // Search customer name, product name, or SKU
+        ...(search && {
+          OR: [
+            {
+              customer: {
+                firstName: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+            },
+            {
+              customer: {
+                lastName: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+            },
+            {
+              items: {
+                some: {
+                  product: {
+                    name: {
+                      contains: search,
+                      mode: "insensitive",
+                    },
+                  },
+                },
+              },
+            },
+            {
+              items: {
+                some: {
+                  product: {
+                    sku: {
+                      contains: search,
+                      mode: "insensitive",
+                    },
+                  },
+                },
+              },
+            },
+          ],
+        }),
+
+        // Amount range
+        ...((minAmount || maxAmount) && {
+          totalAmount: {
+            ...(minAmount && {
+              gte: Number(minAmount),
+            }),
+            ...(maxAmount && {
+              lte: Number(maxAmount),
+            }),
+          },
+        }),
+
+        // Created date
+        ...(createdAt && {
+          createdAt: {
+            gte: new Date(createdAt),
+          },
+        }),
+      },
+
       include: {
         customer: true,
+
         items: {
           include: {
             product: true,
           },
         },
       },
+
       orderBy: {
         createdAt: "desc",
       },
     });
-
-    return Response.json(sales);
+    return NextResponse.json(sales);
   } catch (error) {
-    return Response.json(
+    return NextResponse.json(
       {
         error: "Failed to fetch purchases",
         details: String(error),
