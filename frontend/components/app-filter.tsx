@@ -92,29 +92,27 @@ export function AddFilter({
       [key]: value,
     }));
   };
+  const getOptions = (filter: Filter): FilterOption[] => {
+    if (filter.dynamic) {
+      if (filter.key === "productId") {
+        return productOptions;
+      }
 
-  const getOptions = (
-    filter: string
-  ) => {
-    if (filter === "productId") {
-      return productOptions;
+      if (filter.key === "categoryId") {
+        return categoryOptions;
+      }
+
+      if (filter.key === "supplierId") {
+        return supplierOptions;
+      }
+
+      if (filter.key === "customerId") {
+        return customerOptions;
+      }
     }
 
-    if (filter === "categoryId") {
-      return categoryOptions;
-    }
-
-    if (filter === "supplierId") {
-      return supplierOptions;
-    }
-
-    if (filter === "customerId") {
-      return customerOptions;
-    }
-
-    return [];
+    return filter.options ?? [];
   };
-
   const handleClear = () => {
     setFilterValues({});
     onApply?.({});
@@ -156,8 +154,8 @@ export function AddFilter({
         </div>
         <div className="grid gap-3">
 
-          {data.map((filter) => {
-            const options = getOptions(filter.key);
+          {data.map((filter: any) => {
+            const options = getOptions(filter);
 
             return (
               <div
@@ -185,7 +183,6 @@ export function AddFilter({
                     <option value="">
                       Select {filter.label}
                     </option>
-
                     {options.map((option) => (
                       <option
                         key={option.value}

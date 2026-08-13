@@ -13,9 +13,17 @@ import {
 
 export function InventoryTable({
   inventorydata,
-}: {
-  inventorydata: any[];
-}) {
+  isLoading,
+  error }: any) {
+
+  if (isLoading) {
+    return <p>Loading inventory...</p>;
+  }
+
+  if (error) {
+    return <p>Failed to load inventory.</p>;
+  }
+
   return (
     <Table>
       <TableCaption>
@@ -35,7 +43,7 @@ export function InventoryTable({
       </TableHeader>
 
       <TableBody>
-        {inventorydata.map((item: any) => (
+        {inventorydata?.map((item: any) => (
           <TableRow key={item.id}>
             <TableCell>
               {item.product.name}
@@ -83,15 +91,10 @@ export function InventoryTable({
     </Table>
   );
 }
-export function InventoryCard({ inventorydata }: { inventorydata: any[] }) {
-  const lowStock = inventorydata.filter(
-    (item) => item.quantity > 0 && item.quantity <= 10
-  ).length;
-
-  const outOfStock = inventorydata.filter(
-    (item) => item.quantity === 0
-  ).length;
-
+//inventory card
+import { useSummaryInventory } from "@/hooks/use-inventory";
+export function InventoryCard() {
+  const { data: summary = [], isPending } = useSummaryInventory();
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
@@ -101,7 +104,7 @@ export function InventoryCard({ inventorydata }: { inventorydata: any[] }) {
         </p>
 
         <p className="text-2xl font-bold">
-          {inventorydata.length}
+          {isPending ? "..." : summary.totalProducts}
         </p>
       </div>
 
@@ -111,7 +114,7 @@ export function InventoryCard({ inventorydata }: { inventorydata: any[] }) {
         </p>
 
         <p className="text-2xl font-bold">
-          {lowStock}
+          {isPending ? "..." : summary.lowStock}
         </p>
       </div>
 
@@ -121,7 +124,7 @@ export function InventoryCard({ inventorydata }: { inventorydata: any[] }) {
         </p>
 
         <p className="text-2xl font-bold">
-          {outOfStock}
+          {isPending ? "..." : summary.outOfStock}
         </p>
       </div>
 
@@ -129,15 +132,19 @@ export function InventoryCard({ inventorydata }: { inventorydata: any[] }) {
   );
 }
 
+import { useState } from "react";
 
+import { FilterCard } from "../app-filter";
 import { useInventory } from "@/hooks/use-inventory";
 export function InventoryUi() {
-  const { data: inventory = [] } = useInventory();
-  console.log(inventory)
+  const [filterValues, setFilterValues] = useState({});
+  const { data: inventory = [], isLoading, error } = useInventory(filterValues);
+  console.log(filterValues)
   return (
     <div className="p-6 space-y-6">
-      <InventoryCard inventorydata={inventory} />
-      <InventoryTable inventorydata={inventory} />
+      <InventoryCard />
+      <FilterCard pagetype="inventory" onApply={setFilterValues} />
+      <InventoryTable inventorydata={inventory} isLoading={isLoading} error={error} />
     </div>
   )
 }

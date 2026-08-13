@@ -39,16 +39,24 @@ export const filters = {
       type: "date",
     },
   ],
-
   inventory: [
     {
       key: "stockStatus",
       label: "Stock status",
       type: "select",
       options: [
-        "in-stock",
-        "low-stock",
-        "out-of-stock",
+        {
+          label: "In Stock",
+          value: "in-stock",
+        },
+        {
+          label: "Low Stock",
+          value: "low-stock",
+        },
+        {
+          label: "Out of Stock",
+          value: "out-of-stock",
+        },
       ],
     },
     {
@@ -63,15 +71,29 @@ export const filters = {
       label: "Unit",
       type: "select",
       options: [
-        "pcs",
-        "kg",
-        "g",
-        "liter",
-        "meter",
+        {
+          label: "Pieces",
+          value: "pcs",
+        },
+        {
+          label: "Kilograms",
+          value: "kg",
+        },
+        {
+          label: "Grams",
+          value: "g",
+        },
+        {
+          label: "Liters",
+          value: "liter",
+        },
+        {
+          label: "Meters",
+          value: "meter",
+        },
       ],
     },
   ],
-
   suppliers: [
     {
       key: "supplierId",

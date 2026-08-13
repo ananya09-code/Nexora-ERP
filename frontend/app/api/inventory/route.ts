@@ -1,9 +1,55 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(Request: NextRequest) {
+
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+
+    const search = searchParams.get("search");
+    const stockStatus = searchParams.get("stockStatus");
+    const productId = searchParams.get("productId");
+    const unit = searchParams.get("unit");
+
     const inventory = await prisma.inventory.findMany({
+      where: {
+        ...(productId && {
+          productId,
+        }),
+
+        ...(unit && {
+          unit,
+        }),
+
+        ...(search && {
+          product: {
+            name: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+        }),
+
+        ...(stockStatus === "in-stock" && {
+          quantity: {
+            gte: 10,
+          },
+        }),
+
+        ...(stockStatus === "low-stock" && {
+          quantity: {
+            gt: 0,
+            lt: 10,
+          },
+        }),
+
+        ...(stockStatus === "out-of-stock" && {
+          quantity: {
+            lte: 0,
+          },
+        }),
+      },
+
       include: {
         product: {
           include: {
@@ -11,14 +57,18 @@ export async function GET(Request: NextRequest) {
           },
         },
       },
-
     });
-    return Response.json(inventory)
+
+    return NextResponse.json(inventory);
   } catch (error) {
-    return Response.json({ error: "Failed to fetch inventory" })
+    console.error(error);
+
+    return NextResponse.json(
+      { error: "Failed to fetch inventory" },
+      { status: 500 }
+    );
   }
 }
-
 export async function POST(req: Request) {
   try {
     const data = await req.json();
