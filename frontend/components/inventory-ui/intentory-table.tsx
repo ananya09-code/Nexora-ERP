@@ -1,4 +1,5 @@
 "use client";
+
 import { AdjustInventory } from "@/components/inventory-ui/edit-inventory"
 import {
   Table,
@@ -12,84 +13,80 @@ import {
 } from "@/components/ui/table";
 
 export function InventoryTable({
-  inventorydata,
   isLoading,
-  error }: any) {
+  error,
+  inventorydata,
+}: any
+) {
 
-  if (isLoading) {
-    return <p>Loading inventory...</p>;
-  }
 
-  if (error) {
-    return <p>Failed to load inventory.</p>;
-  }
+  if (isLoading)
+    return (
+      <Table>
+        <TableCaption>
+          Inventory List
+        </TableCaption>
 
-  return (
-    <Table>
-      <TableCaption>
-        Inventory List
-      </TableCaption>
-
-      <TableHeader>
-        <TableRow>
-          <TableHead>Product</TableHead>
-          <TableHead>SKU</TableHead>
-          <TableHead>Category</TableHead>
-          <TableHead>Quantity</TableHead>
-          <TableHead>Unit</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-
-      <TableBody>
-        {inventorydata?.map((item: any) => (
-          <TableRow key={item.id}>
-            <TableCell>
-              {item.product.name}
-            </TableCell>
-
-            <TableCell>
-              {item.product.sku}
-            </TableCell>
-
-            <TableCell>
-              {item.product.category.name}
-            </TableCell>
-
-            <TableCell>
-              {item.quantity}
-            </TableCell>
-
-            <TableCell>
-              {item.unit}
-            </TableCell>
-
-            <TableCell>
-              {item.quantity === 0
-                ? "Out of Stock"
-                : item.quantity <= item.minStock
-                  ? "Low Stock"
-                  : "Good"}
-            </TableCell>
-            <TableCell><AdjustInventory inventory={item} /></TableCell>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Product</TableHead>
+            <TableHead>SKU</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Quantity</TableHead>
+            <TableHead>Unit</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
+        </TableHeader>
 
-      <TableFooter>
-        <TableRow>
-          <TableCell colSpan={5}>
-            Total Inventory Items
-          </TableCell>
+        <TableBody>
+          {inventorydata.map((item: any) => (
+            <TableRow key={item.id}>
+              <TableCell>
+                {item.product.name}
+              </TableCell>
 
-          <TableCell>
-            {inventorydata.length}
-          </TableCell>
-        </TableRow>
-      </TableFooter>
-    </Table>
-  );
+              <TableCell>
+                {item.product.sku}
+              </TableCell>
+
+              <TableCell>
+                {item.product.category.name}
+              </TableCell>
+
+              <TableCell>
+                {item.quantity}
+              </TableCell>
+
+              <TableCell>
+                {item.unit}
+              </TableCell>
+
+              <TableCell>
+                {item.quantity === 0
+                  ? "Out of Stock"
+                  : item.quantity <= item.minStock
+                    ? "Low Stock"
+                    : "Good"}
+              </TableCell>
+              <TableCell><AdjustInventory inventory={item} /></TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={5}>
+              Total Inventory Items
+            </TableCell>
+
+            <TableCell>
+              {inventorydata.length}
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+    );
 }
 //inventory card
 import { useSummaryInventory } from "@/hooks/use-inventory";
@@ -130,21 +127,24 @@ export function InventoryCard() {
 
     </div>
   );
+
 }
-
+import { AppPagination } from "../app-Pagination";
 import { useState } from "react";
-
 import { FilterCard } from "../app-filter";
 import { useInventory } from "@/hooks/use-inventory";
 export function InventoryUi() {
+  const [page, setPage] = useState(1);
   const [filterValues, setFilterValues] = useState({});
+
   const { data: inventory = [], isLoading, error } = useInventory(filterValues);
-  console.log(filterValues)
+  console.log(page)
   return (
     <div className="p-6 space-y-6">
       <InventoryCard />
       <FilterCard pagetype="inventory" onApply={setFilterValues} />
       <InventoryTable inventorydata={inventory} isLoading={isLoading} error={error} />
+      <AppPagination selectedpage={setPage} meta={inventory.length} />
     </div>
   )
 }
