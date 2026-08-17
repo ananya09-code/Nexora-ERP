@@ -21,7 +21,6 @@ export function CustomerTable({ isLoading, error, customers }: any) {
   if (error) {
     return <p>Failed to load products.</p>;
   }
-  console.log(customers)
   return (
     <Table>
       <TableCaption>Customer List</TableCaption>
@@ -59,18 +58,23 @@ export function CustomerTable({ isLoading, error, customers }: any) {
 }
 import { useState } from "react";
 import { FilterCard } from "@/components/app-filter"
+import { AppPagination } from "@/components/app-Pagination";
 export function CustomerUi() {
   const [filterValues, setFilterValues] = useState({});
+  const [page, setPage] = useState(1);
+  const limit = 1
   const {
-    data: customers = [],
+    data: customersResponse = [],
     isLoading,
     error,
-  } = useCustomers(filterValues)
+  } = useCustomers({ ...filterValues, page, limit })
 
+  const customers = customersResponse?.data ?? [];
   return (
     <div className="w-full space-y-6">
       <FilterCard pagetype="customers" onApply={setFilterValues} />
       <CustomerTable customers={customers} isLoading={isLoading} error={error} />
+      <AppPagination selectedpage={setPage} meta={customers.length} />
     </div>
   )
 

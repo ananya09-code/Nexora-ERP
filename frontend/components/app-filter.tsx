@@ -48,11 +48,12 @@ export function AddFilter({
   const [filterValues, setFilterValues] =
     useState<FilterValues>({});
   const [open, setOpen] = useState(false);
-  const { data: products = [] } = useProducts();
+  const { data: productsResponse = [] } = useProducts();
   const { data: categories = [] } = useCategories();
   const { data: suppliers = [] } = useSuppliers();
-  const { data: customers = [] } = useCustomers();
-
+  const { data: customerRespons = [] = [] } = useCustomers();
+  const products = productsResponse?.data ?? [];
+  const customers = customerRespons?.data ?? [];
   const productOptions: FilterOption[] = products.map(
     (product: any) => ({
       label: product.name,

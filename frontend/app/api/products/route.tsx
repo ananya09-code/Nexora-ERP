@@ -10,57 +10,84 @@ export async function GET(request: NextRequest) {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
 
-    const products = await prisma.product.findMany({
-      where: {
-        ...(productId && {
-          id: productId,
-        }),
+    // Pagination
+    const page = Number(searchParams.get("page")) || 1;
+    const limit = Number(searchParams.get("limit")) || 10;
 
-        ...(categoryId && {
-          categoryId,
-        }),
+    const skip = (page - 1) * limit;
 
-        ...(search && {
-          OR: [
-            {
-              name: {
-                contains: search,
-                mode: "insensitive",
-              },
+    const where = {
+      ...(productId && {
+        id: productId,
+      }),
+
+      ...(categoryId && {
+        categoryId,
+      }),
+
+      ...(search && {
+        OR: [
+          {
+            name: {
+              contains: search,
+              mode: "insensitive" as const,
             },
-            {
-              sku: {
-                contains: search,
-                mode: "insensitive",
-              },
+          },
+          {
+            sku: {
+              contains: search,
+              mode: "insensitive" as const,
             },
-          ],
-        }),
-
-        ...(minPrice && {
-          price: {
-            gte: Number(minPrice),
           },
-        }),
+        ],
+      }),
 
-        ...(maxPrice && {
-          price: {
-            lte: Number(maxPrice),
-          },
-        }),
-      },
+      ...(minPrice && {
+        price: {
+          gte: Number(minPrice),
+        },
+      }),
 
-      include: {
-        category: true,
-        inventory: true,
-      },
+      ...(maxPrice && {
+        price: {
+          lte: Number(maxPrice),
+        },
+      }),
+    };
 
-      orderBy: {
-        createdAt: "desc",
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        where,
+
+        skip,
+        take: limit,
+
+        include: {
+          category: true,
+          inventory: true,
+        },
+
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+
+      prisma.product.count({
+        where,
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return NextResponse.json({
+      data: products,
+      meta: {
+        page,
+        limit,
+        totalPages,
+        total,
       },
     });
-
-    return NextResponse.json(products);
   } catch (error) {
     console.error(error);
 
@@ -70,8 +97,8 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
 export async function POST(req: Request) {
+
   try {
 
     const data = await req.json();

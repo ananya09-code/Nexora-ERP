@@ -13,6 +13,8 @@ export type ProductFilters = {
   minPrice?: number;
   maxPrice?: number;
   createdAt?: string;
+  page?: number | string;
+  limit?: number | string;
 };
 
 export function useProducts(filters?: ProductFilters) {

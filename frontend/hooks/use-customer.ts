@@ -19,6 +19,8 @@ export type CustomerFilters = {
   email?: string;
   createdAt?:
   string;
+  page?: number | string;
+  limit?: number | string;
 };
 
 // GET CUSTOMERS

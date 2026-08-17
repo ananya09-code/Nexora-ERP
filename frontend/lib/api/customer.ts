@@ -36,8 +36,13 @@ export async function getCustomers(filters?: CustomerFilters) {
   if (filters?.createdAt) {
     params.set("createdAt", filters.createdAt);
   }
+  if (filters?.page) {
+    params.set("page", String(filters.page))
+  }
 
-
+  if (filters?.limit) {
+    params.set("limit", String(filters.limit))
+  }
 
   const res = await fetch(`/api/customers/?${params.toString()}`);
 

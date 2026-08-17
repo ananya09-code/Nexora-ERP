@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -11,55 +10,79 @@ export async function GET(request: NextRequest) {
     const productId = searchParams.get("productId");
     const unit = searchParams.get("unit");
 
-    const inventory = await prisma.inventory.findMany({
-      where: {
-        ...(productId && {
-          productId,
-        }),
+    const page = Number(searchParams.get("page")) || 1;
+    const limit = Number(searchParams.get("limit")) || 10;
 
-        ...(unit && {
-          unit,
-        }),
+    const skip = (page - 1) * limit;
 
-        ...(search && {
-          product: {
-            name: {
-              contains: search,
-              mode: "insensitive",
-            },
-          },
-        }),
+    const where = {
+      ...(productId && {
+        productId,
+      }),
 
-        ...(stockStatus === "in-stock" && {
-          quantity: {
-            gte: 10,
-          },
-        }),
+      ...(unit && {
+        unit,
+      }),
 
-        ...(stockStatus === "low-stock" && {
-          quantity: {
-            gt: 0,
-            lt: 10,
-          },
-        }),
-
-        ...(stockStatus === "out-of-stock" && {
-          quantity: {
-            lte: 0,
-          },
-        }),
-      },
-
-      include: {
+      ...(search && {
         product: {
-          include: {
-            category: true,
+          name: {
+            contains: search,
+            mode: "insensitive" as const,
           },
         },
+      }),
+
+      ...(stockStatus === "in-stock" && {
+        quantity: {
+          gte: 10,
+        },
+      }),
+
+      ...(stockStatus === "low-stock" && {
+        quantity: {
+          gt: 0,
+          lt: 10,
+        },
+      }),
+
+      ...(stockStatus === "out-of-stock" && {
+        quantity: {
+          lte: 0,
+        },
+      }),
+    };
+
+    const [inventory, total] = await Promise.all([
+      prisma.inventory.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          product: {
+            include: {
+              category: true,
+            },
+          },
+        },
+      }),
+
+      prisma.inventory.count({
+        where,
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return NextResponse.json({
+      data: inventory,
+      meta: {
+        page,
+        limit,
+        totalPages,
+        total,
       },
     });
-
-    return NextResponse.json(inventory);
   } catch (error) {
     console.error(error);
 
@@ -69,6 +92,7 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
 export async function POST(req: Request) {
   try {
     const data = await req.json();

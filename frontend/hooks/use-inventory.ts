@@ -9,6 +9,8 @@ export type InventoryFilters = {
   stockStatus?: "in-stock" | "low-stock" | "out-of-stock";
   productId?: string;
   unit?: "pieces" | "kg" | "g" | "liter" | "meter";
+  page?: number;
+  limit?: number;
 };
 
 
@@ -16,19 +18,11 @@ export function useInventory(filters?: InventoryFilters) {
   return useQuery({ queryKey: ["inventory", filters], queryFn: () => getInventory(filters) });
 }
 
-export type matadata = {
-  page: number;
-  limit: number;
-  totalpages: number;
-  total: number
-}
-
 export type InventoryForm = {
   productId: string;
   adjustment: number;
   reason?: string;
   notes?: string;
-  meta?: matadata[]
 }
 export function useUpdateInventory() {
   const queryClient = useQueryClient();

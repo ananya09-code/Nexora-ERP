@@ -1,62 +1,87 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
-
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-
-  const search = searchParams.get("search");
-  const customerId = searchParams.get("customerId");
-  const email = searchParams.get("email");
-  const createdAt = searchParams.get("createdAt");
-
-
   try {
-    const customers = await prisma.customer.findMany({
-      where: {
-        ...(customerId && {
-          id: customerId,
-        }),
+    const { searchParams } = new URL(request.url);
 
-        ...(email && {
-          email: email,
-        }),
+    const search = searchParams.get("search");
+    const customerId = searchParams.get("customerId");
+    const email = searchParams.get("email");
+    const createdAt = searchParams.get("createdAt");
 
-        ...(search && {
-          OR: [
-            {
-              firstName: {
-                contains: search,
-                mode: "insensitive",
-              },
+    // Pagination
+    const page = Number(searchParams.get("page")) || 1;
+    const limit = Number(searchParams.get("limit")) || 10;
 
-              lastName: {
-                contains: search,
-                mode: "insensitive",
-              },
+    const skip = (page - 1) * limit;
+
+    const where = {
+      ...(customerId && {
+        id: customerId,
+      }),
+
+      ...(email && {
+        email: email,
+      }),
+
+      ...(search && {
+        OR: [
+          {
+            firstName: {
+              contains: search,
+              mode: "insensitive" as const,
             },
-            {
-              email: {
-                contains: search,
-                mode: "insensitive",
-              },
-            },
-          ],
-        }),
-        ...(createdAt && {
-          createdAt: {
-            gte: new Date(createdAt),
           },
-        }),
-      },
+          {
+            lastName: {
+              contains: search,
+              mode: "insensitive" as const,
+            },
+          },
+          {
+            email: {
+              contains: search,
+              mode: "insensitive" as const,
+            },
+          },
+        ],
+      }),
 
+      ...(createdAt && {
+        createdAt: {
+          gte: new Date(createdAt),
+        },
+      }),
+    };
 
-      orderBy: {
-        createdAt: "desc",
+    const [customers, total] = await Promise.all([
+      prisma.customer.findMany({
+        where,
+
+        skip,
+        take: limit,
+
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+
+      prisma.customer.count({
+        where,
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return NextResponse.json({
+      data: customers,
+      meta: {
+        page,
+        limit,
+        totalPages,
+        total,
       },
     });
-
-    return NextResponse.json(customers);
-
   } catch (error) {
     console.error("GET CUSTOMERS ERROR:", error);
 
@@ -71,8 +96,6 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
-
 export async function POST(req: Request) {
   try {
     const data = await req.json();

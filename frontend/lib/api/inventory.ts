@@ -18,7 +18,12 @@ export async function getInventory(filters?: InventoryFilters) {
   if (filters?.unit) {
     params.set("unit", filters.unit);
   }
-
+  if (filters?.page) {
+    params.set("page", filters.page.toString());
+  }
+  if (filters?.limit) {
+    params.set("limit", filters.limit.toString());
+  }
   try {
     const query = params.toString();
 
