@@ -9,6 +9,8 @@ export type SaleFilters = {
   minAmount?: number;
   maxAmount?: number;
   createdAt?: string;
+  page?: number;
+  limit?: number;
 };
 
 export function useSales(filters: SaleFilters) {

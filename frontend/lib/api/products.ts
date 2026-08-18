@@ -63,9 +63,10 @@ export async function getProducts(filters?: ProductFilters) {
   if (!res.ok) {
     throw new Error("Failed to fetch products");
   }
-
-  return res.json();
+  const result = await res.json();
+  return { data: result?.data ?? [], meta: result.meta }
 }
+
 // CREATE PRODUCT
 export async function createProduct(data: ProductForm): Promise<Product> {
   const res = await fetch("/api/products", {
@@ -76,11 +77,12 @@ export async function createProduct(data: ProductForm): Promise<Product> {
     body: JSON.stringify(data),
   });
 
-  const result = await res.json();
 
+  const result = await res.json();
   if (!res.ok) {
     throw new Error(result.message || "Failed to create product");
   }
 
-  return result;
+  const products = result?.data ?? []
+  return products;
 }

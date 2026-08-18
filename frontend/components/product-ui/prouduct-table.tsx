@@ -161,14 +161,15 @@ export function ProductUi() {
   const [filterValues, setFilterValues] = useState({});
   const [page, setPage] = useState(1);
   const limit = 10
-  const { data: productsResponse = [], isPending, error } =
+  const { data: products, isPending, error } =
     useProducts({ ...filterValues, page, limit });
 
-  const products = productsResponse?.data ?? [];
   return (<div className="w-full space-y-6">
     <FilterCard pagetype="products" onApply={setFilterValues} />
-    <ProductTable data={products} isLoading={isPending} error={error} />
-    <AppPagination selectedpage={setPage} meta={products.length} />
+    <ProductTable data={products?.data ?? []} isLoading={isPending} error={error} />
+    {
+      (products?.meta && (<AppPagination meta={products.meta} selectedPage={setPage} />))
+    }
   </div>
   )
 } 

@@ -17,6 +17,8 @@ export type PurchaseFilters = {
   minAmount?: number;
   maxAmount?: number;
   createdAt?: string;
+  page?: number;
+  limit?: number;
 };
 
 

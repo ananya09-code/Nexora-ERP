@@ -39,7 +39,12 @@ export async function getSuppliers(filters?: SupplierFilters) {
     params.set("createdat", filters.createdAt);
   }
 
-
+  if (filters?.page) {
+    params.set("page", filters.page.toString())
+  }
+  if (filters?.limit) {
+    params.set("limit", filters.limit.toString())
+  }
 
 
   const res = await fetch(`/api/suppliers?${params.toString()}`);
@@ -49,11 +54,10 @@ export async function getSuppliers(filters?: SupplierFilters) {
     throw new Error("Failed to fetch suppliers");
   }
 
+  const result = await res.json();
 
-  return res.json();
-
+  return { data: result?.data ?? [], meta: result?.meta }
 }
-
 
 
 // CREATE SUPPLIER

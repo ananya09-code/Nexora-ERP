@@ -135,15 +135,13 @@ export function InventoryUi() {
   const [page, setPage] = useState(1);
   const [filterValues, setFilterValues] = useState({})
   const limit = 10
-  const { data: inventoryResponse = [], isLoading, error } = useInventory({ ...filterValues, page, limit });
-  const inventorydata = inventoryResponse?.data ?? [];
-  const meta = inventoryResponse?.meta;
+  const { data: inventory, isLoading, error } = useInventory({ ...filterValues, page, limit });
   return (
     <div className="p-6 space-y-6">
       <InventoryCard />
       <FilterCard pagetype="inventory" onApply={setFilterValues} />
-      <InventoryTable inventorydata={inventorydata} isLoading={isLoading} error={error} />
-      <AppPagination selectedpage={setPage} meta={inventorydata.length} />
+      <InventoryTable inventorydata={inventory?.data ?? []} isLoading={isLoading} error={error} />
+      {(inventory?.meta && (<AppPagination meta={inventory.meta} selectedPage={setPage} />))}
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
-
-
+// CREATE PURCHASE
+//
 // GET ALL PURCHASES
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -12,108 +12,128 @@ export async function GET(request: NextRequest) {
   const minAmount = searchParams.get("minAmount");
   const maxAmount = searchParams.get("maxAmount");
 
+  const page = Number(searchParams.get("page")) || 1;
+  const limit = Number(searchParams.get("limit")) || 10;
+
+  const skip = (page - 1) * limit;
 
   try {
-    const purchases = await prisma.purchase.findMany({
-      where: {
-        ...(productId && {
-          items: {
-            some: {
-              productId,
-            },
-          },
-        }),
-
-        ...(supplierId && {
-          supplierId,
-        }),
-
-        ...(search && {
-          OR: [
-            {
-              supplier: {
-                name: {
-                  contains: search,
-                  mode: "insensitive",
-                },
-              },
-            },
-            {
-              items: {
-                some: {
-                  product: {
-                    name: {
-                      contains: search,
-                      mode: "insensitive",
-                    },
-                  },
-                },
-              },
-            },
-            {
-              items: {
-                some: {
-                  product: {
-                    sku: {
-                      contains: search,
-                      mode: "insensitive",
-                    },
-                  },
-                },
-              },
-            },
-          ],
-        }),
-
-        ...((minAmount || maxAmount) && {
-          totalAmount: {
-            ...(minAmount && {
-              gte: Number(minAmount),
-            }),
-            ...(maxAmount && {
-              lte: Number(maxAmount),
-            }),
-          },
-        }),
-      },
-
-      include: {
-        supplier: true,
-
+    const where = {
+      // Product filter
+      ...(productId && {
         items: {
-          include: {
-            product: true,
+          some: {
+            productId,
           },
         },
-      },
+      }),
 
-      orderBy: {
-        createdAt: "desc",
+      // Supplier filter
+      ...(supplierId && {
+        supplierId,
+      }),
+
+      // Search supplier name, product name, or SKU
+      ...(search && {
+        OR: [
+          {
+            supplier: {
+              name: {
+                contains: search,
+                mode: "insensitive" as const,
+              },
+            },
+          },
+          {
+            items: {
+              some: {
+                product: {
+                  name: {
+                    contains: search,
+                    mode: "insensitive" as const,
+                  },
+                },
+              },
+            },
+          },
+          {
+            items: {
+              some: {
+                product: {
+                  sku: {
+                    contains: search,
+                    mode: "insensitive" as const,
+                  },
+                },
+              },
+            },
+          },
+        ],
+      }),
+
+      // Amount range
+      ...((minAmount || maxAmount) && {
+        totalAmount: {
+          ...(minAmount && {
+            gte: Number(minAmount),
+          }),
+          ...(maxAmount && {
+            lte: Number(maxAmount),
+          }),
+        },
+      }),
+    };
+
+    const [purchases, total] = await Promise.all([
+      prisma.purchase.findMany({
+        where,
+        skip,
+        take: limit,
+
+        include: {
+          supplier: true,
+
+          items: {
+            include: {
+              product: true,
+            },
+          },
+        },
+
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+
+      prisma.purchase.count({
+        where,
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return NextResponse.json({
+      data: purchases,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages,
       },
     });
-
-    return NextResponse.json(purchases);
-
-
   } catch (error) {
+    console.error("Failed to fetch purchases:", error);
 
     return NextResponse.json(
       {
         error: "Failed to fetch purchases",
-        details: String(error),
       },
       {
         status: 500,
       }
     );
-
   }
-
 }
-
-
-
-// CREATE PURCHASE
 export async function POST(req: Request) {
 
   try {

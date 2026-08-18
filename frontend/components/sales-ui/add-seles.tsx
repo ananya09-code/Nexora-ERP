@@ -62,13 +62,13 @@ export function AddSales() {
 
 
   const {
-    data: products = [],
+    data: products,
     isLoading: productLoading,
   } = useProducts();
 
 
 
-  const { data: customers = [],
+  const { data: customers,
     isLoading: customerLoading,
   } = useCustomers();
 
@@ -277,7 +277,7 @@ export function AddSales() {
                   <SelectContent>
 
 
-                    {customerLoading ? <h1>Loading......</h1> : customers.map((customer) => (
+                    {customerLoading ? <h1>Loading......</h1> : customers?.data ?? [].map((customer: any) => (
 
                       <SelectItem
                         key={customer.id}
@@ -343,8 +343,8 @@ export function AddSales() {
                   value={selectedProduct}
                   onValueChange={(value) => {
                     setSelectedProduct(value || "");
-                    const product = products.find(
-                      (item) => item.id === value
+                    const product = products?.data ?? [].find(
+                      (item: any) => item.id === value
                     );
 
                     if (product) {
@@ -381,7 +381,7 @@ export function AddSales() {
 
 
                   <SelectContent>
-                    {productLoading ? <h1>loading.......</h1> : (products.map((product) => (
+                    {productLoading ? <h1>loading.......</h1> : products?.data ?? [].map((product: any) => (
 
                       <SelectItem
                         key={product.id}
@@ -392,7 +392,7 @@ export function AddSales() {
 
                       </SelectItem>
 
-                    )))}
+                    ))}
 
 
                   </SelectContent>

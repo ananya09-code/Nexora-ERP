@@ -11,120 +11,140 @@ export async function GET(request: NextRequest) {
   const maxAmount = searchParams.get("maxAmount");
   const createdAt = searchParams.get("createdAt");
 
+  const page = Number(searchParams.get("page")) || 1;
+  const limit = Number(searchParams.get("limit")) || 10;
+
+  const skip = (page - 1) * limit;
 
   try {
+    const where = {
+      // Customer filter
+      ...(customerId && {
+        customerId,
+      }),
 
-    const sales = await prisma.sale.findMany({
-      where: {
-        // Customer filter
-        ...(customerId && {
-          customerId,
-        }),
-
-        // Product filter
-        ...(productId && {
-          items: {
-            some: {
-              productId,
-            },
-          },
-        }),
-
-        // Statu    ...(status && {status,}),
-
-        // Search customer name, product name, or SKU
-        ...(search && {
-          OR: [
-            {
-              customer: {
-                firstName: {
-                  contains: search,
-                  mode: "insensitive",
-                },
-              },
-            },
-            {
-              customer: {
-                lastName: {
-                  contains: search,
-                  mode: "insensitive",
-                },
-              },
-            },
-            {
-              items: {
-                some: {
-                  product: {
-                    name: {
-                      contains: search,
-                      mode: "insensitive",
-                    },
-                  },
-                },
-              },
-            },
-            {
-              items: {
-                some: {
-                  product: {
-                    sku: {
-                      contains: search,
-                      mode: "insensitive",
-                    },
-                  },
-                },
-              },
-            },
-          ],
-        }),
-
-        // Amount range
-        ...((minAmount || maxAmount) && {
-          totalAmount: {
-            ...(minAmount && {
-              gte: Number(minAmount),
-            }),
-            ...(maxAmount && {
-              lte: Number(maxAmount),
-            }),
-          },
-        }),
-
-        // Created date
-        ...(createdAt && {
-          createdAt: {
-            gte: new Date(createdAt),
-          },
-        }),
-      },
-
-      include: {
-        customer: true,
-
+      // Product filter
+      ...(productId && {
         items: {
-          include: {
-            product: true,
+          some: {
+            productId,
           },
         },
-      },
+      }),
 
-      orderBy: {
-        createdAt: "desc",
+      // Search customer name, product name, or SKU
+      ...(search && {
+        OR: [
+          {
+            customer: {
+              firstName: {
+                contains: search,
+                mode: "insensitive" as const,
+              },
+            },
+          },
+          {
+            customer: {
+              lastName: {
+                contains: search,
+                mode: "insensitive" as const,
+              },
+            },
+          },
+          {
+            items: {
+              some: {
+                product: {
+                  name: {
+                    contains: search,
+                    mode: "insensitive" as const,
+                  },
+                },
+              },
+            },
+          },
+          {
+            items: {
+              some: {
+                product: {
+                  sku: {
+                    contains: search,
+                    mode: "insensitive" as const,
+                  },
+                },
+              },
+            },
+          },
+        ],
+      }),
+
+      // Amount range
+      ...((minAmount || maxAmount) && {
+        totalAmount: {
+          ...(minAmount && {
+            gte: Number(minAmount),
+          }),
+          ...(maxAmount && {
+            lte: Number(maxAmount),
+          }),
+        },
+      }),
+
+      // Created date
+      ...(createdAt && {
+        createdAt: {
+          gte: new Date(createdAt),
+        },
+      }),
+    };
+
+    const [sales, total] = await Promise.all([
+      prisma.sale.findMany({
+        where, skip,
+        take: limit,
+
+        include: {
+          customer: true,
+
+          items: {
+            include: {
+              product: true,
+            },
+          },
+        },
+
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+
+      prisma.sale.count({
+        where,
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return NextResponse.json({
+      data: sales,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages,
       },
     });
-    return NextResponse.json(sales);
   } catch (error) {
+    console.error("Failed to fetch sales:", error);
+
     return NextResponse.json(
       {
-        error: "Failed to fetch purchases",
-        details: String(error),
+        error: "Failed to fetch sales",
       },
       {
         status: 500,
       }
-
-    )
-
+    );
   }
 }
 

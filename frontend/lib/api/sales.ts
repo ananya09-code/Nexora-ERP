@@ -37,15 +37,23 @@ export async function getSales(filters: SaleFilters) {
   if (filters?.createdAt) {
     params.set("createdAt", filters.createdAt);
   }
-
+  if (filters?.page) {
+    params.set("page", String(filters.page))
+  }
+  if (filters?.limit) {
+    params.set("limit", String(filters.limit))
+  }
 
   const res = await fetch(`/api/sales?${params.toString()}`)
   if (!res.ok) {
     throw new Error(
       "Failed to fetch purchases")
   }
-
-  return res.json()
+  const result = await res.json()
+  return {
+    data: result?.data ?? []
+    , meta: result.meta
+  }
 
 }
 

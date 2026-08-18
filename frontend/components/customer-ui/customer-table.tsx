@@ -64,17 +64,18 @@ export function CustomerUi() {
   const [page, setPage] = useState(1);
   const limit = 1
   const {
-    data: customersResponse = [],
+    data: customers,
     isLoading,
     error,
   } = useCustomers({ ...filterValues, page, limit })
 
-  const customers = customersResponse?.data ?? [];
   return (
     <div className="w-full space-y-6">
       <FilterCard pagetype="customers" onApply={setFilterValues} />
-      <CustomerTable customers={customers} isLoading={isLoading} error={error} />
-      <AppPagination selectedpage={setPage} meta={customers.length} />
+      <CustomerTable customers={customers?.data ?? []} isLoading={isLoading} error={error} />
+      {
+        (customers?.meta && (<AppPagination meta={customers.meta} selectedPage={setPage} />))
+      }
     </div>
   )
 

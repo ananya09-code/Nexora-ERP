@@ -1,55 +1,79 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
-
-
 export async function GET(request: NextRequest) {
-
   const { searchParams } = new URL(request.url);
 
   const search = searchParams.get("search");
-  const supplierId = searchParams.get("suppliersId");
+  const supplierId = searchParams.get("supplierId");
   const email = searchParams.get("email");
   const createdAt = searchParams.get("createdAt");
 
+  const page = Number(searchParams.get("page")) || 1;
+  const limit = Number(searchParams.get("limit")) || 10;
 
-  const suppliers = await prisma.supplier.findMany({
-    where: {
-      ...(supplierId && {
-        id: supplierId,
-      }),
+  const skip = (page - 1) * limit;
 
-      ...(email && {
-        email: email,
-      }),
+  const where = {
+    ...(supplierId && {
+      id: supplierId,
+    }),
 
-      ...(search && {
-        OR: [
-          {
-            name: {
-              contains: search,
-              mode: "insensitive",
-            },
+    ...(email && {
+      email: {
+        contains: email,
+        mode: "insensitive" as const,
+      },
+    }),
+
+    ...(search && {
+      OR: [
+        {
+          name: {
+            contains: search,
+            mode: "insensitive" as const,
           },
-          {
-            email: {
-              contains: search,
-              mode: "insensitive",
-            },
-          },
-        ],
-      }),
-      ...(createdAt && {
-        createdAt: {
-          gte: new Date(createdAt),
         },
-      }),
+        {
+          email: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
+        },
+      ],
+    }),
+
+    ...(createdAt && {
+      createdAt: {
+        gte: new Date(createdAt),
+      },
+    }),
+  };
+
+  const [suppliers, total] = await Promise.all([
+    prisma.supplier.findMany({
+      where,
+
+      skip,
+      take: limit,
+
+    }),
+
+    prisma.supplier.count({
+      where,
+    }),
+  ]);
+
+  return NextResponse.json({
+    data: suppliers,
+    meta: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
     },
-
-
   });
-
-  return NextResponse.json(suppliers);
 }
+
 
 
 

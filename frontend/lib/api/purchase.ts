@@ -46,7 +46,7 @@ import { PurchaseFilters } from "@/hooks/use-purchase";
 
 // Get all purchases
 
-export async function getPurchases(filters: PurchaseFilters): Promise<Purchase[]> {
+export async function getPurchases(filters: PurchaseFilters) {
   const params = new URLSearchParams();
 
   if (filters?.search) {
@@ -72,11 +72,17 @@ export async function getPurchases(filters: PurchaseFilters): Promise<Purchase[]
   if (filters?.createdAt) {
     params.set("createdAt", filters.createdAt);
   }
-
+  if (filters?.page) {
+    params.set("page", String(filters.page));
+  }
+  if (filters?.limit) {
+    params.set("limit", String(filters.limit));
+  }
 
 
   const res = await fetch(`/api/purchases?${params.toString()}`);
 
+  const result = await res.json();
 
   if (!res.ok) {
 
@@ -86,9 +92,10 @@ export async function getPurchases(filters: PurchaseFilters): Promise<Purchase[]
 
   }
 
-
-  return res.json();
-
+  return {
+    data: result?.data ?? [],
+    meta: result?.meta,
+  };
 }
 
 

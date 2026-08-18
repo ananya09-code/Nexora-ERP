@@ -18,6 +18,8 @@ export type SupplierFilters = {
   suppliersId?: string;
   email?: string;
   createdAt?: string;
+  page?: number;
+  limit?: number;
 };
 
 

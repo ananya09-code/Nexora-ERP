@@ -49,8 +49,8 @@ export async function getCustomers(filters?: CustomerFilters) {
   if (!res.ok) {
     throw new Error("Failed to fetch customers");
   }
-
-  return res.json();
+  const result = await res.json();
+  return { data: result?.data ?? [], meta: result.meta }
 }
 
 

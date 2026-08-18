@@ -221,21 +221,38 @@ export function PurchaseTable({ isLoading, error, purchases }: any) {
 }
 import { FilterCard } from "@/components/app-filter"
 import { useState } from "react";
+import { AppPagination } from "../app-Pagination";
 export function PurchaseUi() {
 
   const [filterValues, setFilterValues] = useState({});
+  const [page, setPage] = useState(1);
+  const limit = 1;
   const {
-    data: purchases = [],
+    data: purchases,
     isLoading,
     error,
 
-  } = usePurchases(filterValues);
-
+  } = usePurchases({ ...filterValues, page, limit });
+  console.log(purchases)
   return (
     <div className="flex flex-col gap-4">
-      <FilterCard pagetype="purchases" onApply={setFilterValues} />
-      <PurchaseTable isLoading={isLoading} error={error} purchases={purchases} />
+      <FilterCard
+        pagetype="purchases"
+        onApply={setFilterValues}
+      />
 
+      <PurchaseTable
+        isLoading={isLoading}
+        error={error}
+        purchases={purchases?.data ?? []}
+      />
+
+      {purchases?.meta && (
+        <AppPagination
+          meta={purchases.meta}
+          selectedPage={setPage}
+        />
+      )}
     </div>
   )
 

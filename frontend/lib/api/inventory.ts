@@ -34,8 +34,9 @@ export async function getInventory(filters?: InventoryFilters) {
     if (!response.ok) {
       throw new Error("Failed to fetch inventory");
     }
+    const result = await response.json();
+    return { data: result?.data ?? [], meta: result.meta };
 
-    return response.json();
   } catch (error) {
     throw new Error("Failed to fetch inventory");
   }

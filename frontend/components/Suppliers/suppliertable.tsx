@@ -75,20 +75,22 @@ export function SupplierTable({ isLoading, error, suppliers }: any) {
 }
 import { FilterCard } from "../app-filter";
 import { useState } from "react";
+import { AppPagination } from "../app-Pagination";
 export function SupplierUi() {
 
   const [filterValues, setFilterValues] = useState({});
+  const [page, setPage] = useState(1);
+  const limit = 10;
   const {
-    data: suppliers = [],
+    data: suppliers,
     isLoading,
     error,
-  } = useSuppliers(filterValues)
-
-
+  } = useSuppliers({ ...filterValues, page, limit })
   return (
     <div className="w-full space-y-6">
       <FilterCard pagetype="suppliers" onApply={setFilterValues} />
-      <SupplierTable suppliers={suppliers} isLoading={isLoading} error={error} />
+      <SupplierTable suppliers={suppliers?.data ?? []} isLoading={isLoading} error={error} />
+      {(suppliers?.meta && (<AppPagination meta={suppliers.meta} selectedPage={setPage} />))}
     </div>
   )
 }

@@ -72,19 +72,25 @@ export function SalesTable({ isLoading, error, sales }: any) {
 }
 import { FilterCard } from "@/components/app-filter";
 import { useState } from "react";
+import { AppPagination } from "../app-Pagination";
 export function SalesUi() {
   const [filterValues, setFilterValues] = useState({});
+  const [page, setPage] = useState(1);
+  const limit = 2;
   const {
-    data: sales = [],
+    data: sales,
     isLoading,
     error,
-  } = useSales(filterValues);
+  } = useSales({ ...filterValues, page, limit });
 
 
   return (
     <div className="w-full space-y-6">
       <FilterCard pagetype="sales" onApply={setFilterValues} />
-      <SalesTable isLoading={isLoading} error={error} sales={sales} />
+      <SalesTable isLoading={isLoading} error={error} sales={sales?.data} />
+      {sales?.meta && (
+        <AppPagination meta={sales.meta} selectedPage={setPage} />
+      )}
     </div>
   )
 }
