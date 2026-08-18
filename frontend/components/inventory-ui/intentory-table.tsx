@@ -134,14 +134,15 @@ import { useInventory } from "@/hooks/use-inventory";
 export function InventoryUi() {
   const [page, setPage] = useState(1);
   const [filterValues, setFilterValues] = useState({})
-  const limit = 10
+  const [limit, setLimit] = useState(10)
   const { data: inventory, isLoading, error } = useInventory({ ...filterValues, page, limit });
   return (
     <div className="p-6 space-y-6">
       <InventoryCard />
       <FilterCard pagetype="inventory" onApply={setFilterValues} />
       <InventoryTable inventorydata={inventory?.data ?? []} isLoading={isLoading} error={error} />
-      {(inventory?.meta && (<AppPagination meta={inventory.meta} selectedPage={setPage} />))}
+      {(inventory?.meta && (<AppPagination setLimit={setLimit} meta={inventory.meta} selectedPage={setPage} />))}
+
     </div>
   )
 }

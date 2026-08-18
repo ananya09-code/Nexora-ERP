@@ -62,7 +62,7 @@ import { AppPagination } from "@/components/app-Pagination";
 export function CustomerUi() {
   const [filterValues, setFilterValues] = useState({});
   const [page, setPage] = useState(1);
-  const limit = 1
+  const [limit, setlimit] = useState(10);
   const {
     data: customers,
     isLoading,
@@ -74,7 +74,7 @@ export function CustomerUi() {
       <FilterCard pagetype="customers" onApply={setFilterValues} />
       <CustomerTable customers={customers?.data ?? []} isLoading={isLoading} error={error} />
       {
-        (customers?.meta && (<AppPagination meta={customers.meta} selectedPage={setPage} />))
+        (customers?.meta && (<AppPagination setLimit={setlimit} meta={customers.meta} selectedPage={setPage} />))
       }
     </div>
   )

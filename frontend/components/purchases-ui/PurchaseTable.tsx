@@ -226,7 +226,7 @@ export function PurchaseUi() {
 
   const [filterValues, setFilterValues] = useState({});
   const [page, setPage] = useState(1);
-  const limit = 1;
+  const [limit, setLimit] = useState(10);
   const {
     data: purchases,
     isLoading,
@@ -249,6 +249,7 @@ export function PurchaseUi() {
 
       {purchases?.meta && (
         <AppPagination
+          setLimit={setLimit}
           meta={purchases.meta}
           selectedPage={setPage}
         />
