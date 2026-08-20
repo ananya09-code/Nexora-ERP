@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-
+import { AppAction } from "../app-Action";
 import { useCustomers } from "@/hooks/use-customer";
 export function CustomerTable({ isLoading, error, customers }: any) {
   if (isLoading) {
@@ -32,6 +32,7 @@ export function CustomerTable({ isLoading, error, customers }: any) {
           <TableHead>Email</TableHead>
           <TableHead>Phone</TableHead>
           <TableHead>Address</TableHead>
+          <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
 
@@ -43,6 +44,9 @@ export function CustomerTable({ isLoading, error, customers }: any) {
             <TableCell>{customer.email}</TableCell>
             <TableCell>{customer.phone}</TableCell>
             <TableCell>{customer.address}</TableCell>
+            <TableCell className="text-right">
+              <AppAction data={customer} settype="customer" />
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -51,6 +55,7 @@ export function CustomerTable({ isLoading, error, customers }: any) {
         <TableRow>
           <TableCell colSpan={4}>Total Customers</TableCell>
           <TableCell>{customers.length}</TableCell>
+
         </TableRow>
       </TableFooter>
     </Table>

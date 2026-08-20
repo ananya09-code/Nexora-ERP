@@ -60,7 +60,9 @@ export async function GET(request: NextRequest) {
 
         skip,
         take: limit,
-
+        include: {
+          sales: true
+        },
         orderBy: {
           createdAt: "desc",
         },

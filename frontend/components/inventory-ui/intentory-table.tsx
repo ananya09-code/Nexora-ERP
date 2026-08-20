@@ -1,5 +1,5 @@
 "use client";
-
+import { AppAction } from "../app-Action";
 import { AdjustInventory } from "@/components/inventory-ui/edit-inventory";
 import {
   Table,
@@ -68,7 +68,7 @@ export function InventoryTable({
             </TableCell>
 
             <TableCell>
-              <AdjustInventory inventory={item} />
+              <AppAction data={item} settype="inventory" />
             </TableCell>
           </TableRow>
         ))}

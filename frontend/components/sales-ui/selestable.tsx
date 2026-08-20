@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useSales } from "@/hooks/use-sales";
-
+import { AppAction } from "../app-Action";
 export function SalesTable({ isLoading, error, sales }: any) {
   if (isLoading) {
     return <p>Loading sales...</p>;
@@ -33,6 +33,7 @@ export function SalesTable({ isLoading, error, sales }: any) {
           <TableHead>Total</TableHead>
           <TableHead>Action</TableHead>
           <TableHead>Date</TableHead>
+
         </TableRow>
       </TableHeader>
 
@@ -58,7 +59,7 @@ export function SalesTable({ isLoading, error, sales }: any) {
             </TableCell>
 
             <TableCell className="">
-              <SaleDetailsDialog sale={sale} />
+              <AppAction settype="sale" data={sale} />
             </TableCell>
 
             <TableCell>

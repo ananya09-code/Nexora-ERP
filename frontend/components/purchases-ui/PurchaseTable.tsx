@@ -1,6 +1,6 @@
 "use client";
 
-
+import { AppAction } from "../app-Action";
 import {
   Table,
   TableBody,
@@ -85,10 +85,12 @@ export function PurchaseTable({ isLoading, error, purchases }: any) {
           </TableHead>
 
 
-          <TableHead className="text-right">
+          <TableHead >
             Total
           </TableHead>
-
+          <TableHead className="text-right">
+            Actions
+          </TableHead>
 
         </TableRow>
 
@@ -160,7 +162,11 @@ export function PurchaseTable({ isLoading, error, purchases }: any) {
               </TableCell>
 
 
+              <TableCell>
 
+                <AppAction settype="purchase" data={purchase} />
+
+              </TableCell>
 
 
             </TableRow>

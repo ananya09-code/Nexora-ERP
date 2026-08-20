@@ -1,5 +1,5 @@
 "use client";
-
+import { AppAction } from "../app-Action";
 import {
   Table,
   TableBody,
@@ -60,10 +60,12 @@ export function ProductTable({ data, isLoading, error }: any) {
           </TableHead>
 
 
-          <TableHead className="text-right">
+          <TableHead >
             Selling Price
           </TableHead>
-
+          <TableHead className="text-right">
+            Actions
+          </TableHead>
 
         </TableRow>
 
@@ -111,10 +113,11 @@ export function ProductTable({ data, isLoading, error }: any) {
 
 
 
-            <TableCell className="text-right">
+            <TableCell >
               {product.price}
             </TableCell>
 
+            <TableCell className="text-right" ><AppAction settype="product" data={product} /></TableCell>
 
 
           </TableRow>
@@ -163,7 +166,7 @@ export function ProductUi() {
   const [limit, setlimit] = useState(10);
   const { data: products, isPending, error } =
     useProducts({ ...filterValues, page, limit });
-
+  console.log(products)
   return (<div className="w-full space-y-6">
     <FilterCard pagetype="products" onApply={setFilterValues} />
     <ProductTable data={products?.data ?? []} isLoading={isPending} error={error} />

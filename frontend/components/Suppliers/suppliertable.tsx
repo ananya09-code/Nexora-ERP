@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
+import { AppAction } from "../app-Action";
 
 import { useSuppliers } from "@/hooks/use-supplier";
 export function SupplierTable({ isLoading, error, suppliers }: any) {
@@ -35,6 +35,7 @@ export function SupplierTable({ isLoading, error, suppliers }: any) {
           <TableHead>Email</TableHead>
           <TableHead>Phone</TableHead>
           <TableHead>Address</TableHead>
+          <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
 
@@ -59,6 +60,9 @@ export function SupplierTable({ isLoading, error, suppliers }: any) {
 
             <TableCell>
               {supplier.address || "-"}
+            </TableCell>
+            <TableCell >
+              <AppAction settype="supplier" data={supplier} />
             </TableCell>
           </TableRow>
         ))}
