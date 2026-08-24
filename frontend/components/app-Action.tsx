@@ -11,22 +11,28 @@ import { MoreHorizontal, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DetailsToggle } from "@/components/action-ui/details-toggle";
 import { DetailsTypeKey } from "@/components/action-ui/details-toggle";
+import { EditToggle } from "@/components/action-ui/edit-toggle";
+import { EditTypeKey } from "@/components/action-ui/edit-toggle";
 type AppActionProps = {
   data: any;
-  settype: DetailsTypeKey;
+  settype: DetailsTypeKey | EditTypeKey;
 }
 export function AppAction({ data, settype }: AppActionProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
-
+  const [editOpen, setEditOpen] = useState(false);
   const handleDetails = () => {
     setMenuOpen(false);
-
     setTimeout(() => {
       setDetailsOpen(true);
     }, 0);
   };
-
+  const handleEdit = () => {
+    setMenuOpen(false);
+    setTimeout(() => {
+      setEditOpen(true);
+    }, 0);
+  }
   return (
     <>
       <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
@@ -42,7 +48,7 @@ export function AppAction({ data, settype }: AppActionProps) {
             View Details
           </DropdownMenuItem>
 
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={handleEdit}>
             Edit
           </DropdownMenuItem>
 
@@ -58,6 +64,10 @@ export function AppAction({ data, settype }: AppActionProps) {
         onOpenChange={setDetailsOpen}
         selectedtype={settype}
       />
-    </>
+      <EditToggle
+        data={data}
+        open={editOpen}
+        datatype={settype}
+        onOpenChange={setEditOpen} /> </>
   );
 }

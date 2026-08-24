@@ -1,22 +1,4 @@
-export type Customer = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string | null;
-  phone: string | null;
-  address: string | null;
-};
-
-
-export type CustomerForm = {
-  firstName: string;
-  lastName: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-};
-import { CustomerFilters } from "@/hooks/use-customer";
-
+import { updateCustomerData, Customer, CustomerForm, CustomerFilters } from "@/lib/types/customertype";
 // GET CUSTOMERS
 export async function getCustomers(filters?: CustomerFilters) {
   const params = new URLSearchParams();
@@ -89,4 +71,18 @@ export async function createCustomer(
 
   return result;
 
+} export async function updateCustomer(data: updateCustomerData) {
+  const id = data?.id
+  const res = await fetch(`/api/customers/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data.data),
+  })
+  if (!res.ok) {
+    throw new Error("Failed to update Customer");
+  }
+
+  return res.json();
 }

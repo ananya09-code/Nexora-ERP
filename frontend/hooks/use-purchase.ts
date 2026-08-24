@@ -8,21 +8,9 @@ import {
 import {
   getPurchases,
   createPurchase,
-  PurchaseForm,
+  updatePurchase,
 } from "@/lib/api/purchase";
-export type PurchaseFilters = {
-  search?: string;
-  supplierId?: string;
-  productId?: string;
-  minAmount?: number;
-  maxAmount?: number;
-  createdAt?: string;
-  page?: number;
-  limit?: number;
-};
-
-
-
+import { PurchaseFilters, PurchaseForm, updatePurchaseData } from "@/lib/types/purchasetype";
 
 // Fetch purchases
 
@@ -114,4 +102,11 @@ export function useCreatePurchase() {
 
 
 
+}
+export function useUpdatePurchase() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (newdata: updatePurchaseData) => updatePurchase(newdata),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['purchases'] }) }
+  })
 }

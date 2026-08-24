@@ -4,26 +4,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createProduct,
   getProducts,
-  ProductForm,
+  updateProduct,
 } from "@/lib/api/products";
-export type ProductFilters = {
-  search?: string;
-  categoryId?: string;
-  productId?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  createdAt?: string;
-  page?: number | string;
-  limit?: number | string;
-};
-
+import { ProductFilters, ProductForm, updateProductData } from "@/lib/types/producttype";
 export function useProducts(filters?: ProductFilters) {
   return useQuery({
     queryKey: ["products", filters],
     queryFn: () => getProducts(filters)
   });
 }
-
 export function useCreateProduct() {
   const queryClient = useQueryClient();
 
@@ -36,4 +25,11 @@ export function useCreateProduct() {
       });
     },
   });
+}
+export function useUpdateProduct() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (newdata: updateProductData) => updateProduct(newdata),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['products'] }) }
+  })
 }

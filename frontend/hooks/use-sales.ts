@@ -1,17 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { getSales, CreateSale } from "@/lib/api/sales"
-import { Sales } from "@/lib/api/sales"
-export type SaleFilters = {
-  search?: string;
-  status?: "completed" | "pending" | "cancelled";
-  customerId?: string;
-  productId?: string;
-  minAmount?: number;
-  maxAmount?: number;
-  createdAt?: string;
-  page?: number;
-  limit?: number;
-};
+import { getSales, CreateSale, updateSale } from "@/lib/api/sales"
+import { SaleFilters, Sales, updateSaleData } from "@/lib/types/salestype"
 
 export function useSales(filters: SaleFilters) {
   return useQuery(
@@ -29,5 +18,12 @@ export function useCreateSales() {
     , onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sales"] })
     }
+  })
+}
+export function useUpdateSales() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (newdata: updateSaleData) => updateSale(newdata),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['sales'] }) }
   })
 }

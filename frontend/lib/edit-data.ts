@@ -1,198 +1,134 @@
-export const categoryDetails = {
-  title: "Category Details",
+export const categoryEdit = {
+  title: "Edit Category",
   sections: [
     {
       title: "Category Information",
       fields: [
-        { label: "Name", key: "name" },
-        { label: "Description", key: "description" },
-      ],
-    },
-    {
-      title: "Products",
-      fields: [
-        { label: "Products", key: "_count.products" },
-      ],
-    },
-    {
-      title: "Dates",
-      fields: [
-        { label: "Created", key: "createdAt", type: "date" },
-        { label: "Updated", key: "updatedAt", type: "date" },
+        { label: "Name", key: "name", type: "text", required: true },
+        { label: "Description", key: "description", type: "textarea" },
       ],
     },
   ],
 };
 
-export const productDetails = {
-  title: "Product Details",
+export const productEdit = {
+  title: "Edit Product",
   sections: [
     {
       title: "Product Information",
       fields: [
-        { label: "Name", key: "name" },
-        { label: "SKU", key: "sku" },
-        { label: "Barcode", key: "barcode" },
-        { label: "Category", key: "category.name" },
-        { label: "Description", key: "description" },
+        { label: "Name", key: "name", type: "text", required: true },
+        { label: "SKU", key: "sku", type: "text", required: true },
+        { label: "Barcode", key: "barcode", type: "text" },
+        { label: "Category", key: "categoryId", type: "select", required: true },
+        { label: "Description", key: "description", type: "textarea" },
       ],
     },
     {
       title: "Pricing",
       fields: [
-        { label: "Selling Price", key: "price", type: "currency" },
-        { label: "Cost Price", key: "costPrice", type: "currency" },
-      ],
-    },
-    {
-      title: "Inventory",
-      fields: [
-        { label: "Quantity", key: "inventory.quantity" },
-        { label: "Minimum Stock", key: "inventory.minStock" },
-        { label: "Unit", key: "inventory.unit" },
-      ],
-    },
-    {
-      title: "Dates",
-      fields: [
-        { label: "Created", key: "createdAt", type: "date" },
-        { label: "Updated", key: "updatedAt", type: "date" },
+        { label: "Selling Price", key: "price", type: "number", required: true },
+        { label: "Cost Price", key: "costPrice", type: "number" },
       ],
     },
   ],
 };
 
-export const inventoryDetails = {
-  title: "Inventory Details",
+export const inventoryEdit = {
+  title: "Adjust Inventory",
   sections: [
     {
       title: "Product Information",
       fields: [
-        { label: "Product", key: "product.name" },
-        { label: "SKU", key: "product.sku" },
-        { label: "Category", key: "product.category.name" },
+        { label: "Product", key: "product.name", type: "text", readonly: true },
+        { label: "SKU", key: "product.sku", type: "text", readonly: true },
       ],
     },
     {
       title: "Stock Information",
       fields: [
-        { label: "Quantity", key: "quantity" },
-        { label: "Minimum Stock", key: "minStock" },
-        { label: "Unit", key: "unit" },
-      ],
-    },
-    {
-      title: "Dates",
-      fields: [
-        { label: "Created", key: "createdAt", type: "date" },
-        { label: "Updated", key: "updatedAt", type: "date" },
+        { label: "Quantity", key: "quantity", type: "number", required: true },
+        { label: "Minimum Stock", key: "minStock", type: "number", required: true },
+        { label: "Unit", key: "unit", type: "text", required: true },
       ],
     },
   ],
 };
 
-export const supplierDetails = {
-  title: "Supplier Details",
+export const supplierEdit = {
+  title: "Edit Supplier",
   sections: [
     {
       title: "Supplier Information",
       fields: [
-        { label: "Name", key: "name" },
-        { label: "Contact Person", key: "contactPerson" },
-        { label: "Email", key: "email" },
-        { label: "Phone", key: "phone" },
-        { label: "Address", key: "address" },
+        { label: "Name", key: "name", type: "text", required: true },
+        { label: "Contact Person", key: "contactPerson", type: "text" },
+        { label: "Email", key: "email", type: "email" },
+        { label: "Phone", key: "phone", type: "text" },
+        { label: "Address", key: "address", type: "textarea" },
       ],
     },
   ],
 };
 
-export const customerDetails = {
-  title: "Customer Details",
+export const customerEdit = {
+  title: "Edit Customer",
   sections: [
     {
       title: "Customer Information",
       fields: [
-        { label: "First Name", key: "firstName" },
-        { label: "Last Name", key: "lastName" },
-        { label: "Email", key: "email" },
-        { label: "Phone", key: "phone" },
-        { label: "Address", key: "address" },
-      ],
-    },
-    {
-      title: "Sales",
-      fields: [
-        { label: "Total Sales", key: "_count.sales" },
-      ],
-    },
-    {
-      title: "Dates",
-      fields: [
-        { label: "Created", key: "createdAt", type: "date" },
-        { label: "Updated", key: "updatedAt", type: "date" },
+        { label: "First Name", key: "firstName", type: "text", required: true },
+        { label: "Last Name", key: "lastName", type: "text", required: true },
+        { label: "Email", key: "email", type: "email" },
+        { label: "Phone", key: "phone", type: "text" },
+        { label: "Address", key: "address", type: "textarea" },
       ],
     },
   ],
 };
 
-export const saleDetails = {
-  title: "Sale Details",
+export const saleEdit = {
+  title: "Edit Sale",
   sections: [
     {
       title: "Sale Information",
       fields: [
-        { label: "Sale ID", key: "id" },
-        { label: "Customer", key: "customer.firstName" },
-        { label: "Status", key: "status" },
-        { label: "Total Amount", key: "totalAmount", type: "currency" },
+        { label: "Customer", key: "customerId", type: "select", required: true },
+        {
+          label: "Status",
+          key: "status",
+          type: "select",
+          options: [
+            { label: "Completed", value: "completed" },
+            { label: "Cancelled", value: "cancelled" },
+          ],
+        },
       ],
     },
     {
       title: "Items",
       fields: [
-        { label: "Number of Items", key: "_count.items" },
-        { label: "Product", key: "items.0.product.name" },
-        { label: "Quantity", key: "items.0.quantity" },
-        { label: "Price", key: "items.0.price", type: "currency" },
-      ],
-    },
-    {
-      title: "Dates",
-      fields: [
-        { label: "Created", key: "createdAt", type: "date" },
-        { label: "Updated", key: "updatedAt", type: "date" },
+        { label: "Product", key: "items", type: "items" },
       ],
     },
   ],
 };
 
-export const purchaseDetails = {
-  title: "Purchase Details",
+export const purchaseEdit = {
+  title: "Edit Purchase",
   sections: [
     {
       title: "Purchase Information",
       fields: [
-        { label: "Purchase ID", key: "id" },
-        { label: "Supplier", key: "supplier.name" },
-        { label: "Total Amount", key: "totalAmount", type: "currency" },
+        { label: "Supplier", key: "supplierId", type: "select", required: true },
       ],
     },
     {
       title: "Items",
       fields: [
-        { label: "Number of Items", key: "_count.items" },
-        { label: "Product", key: "items.0.product.name" },
-        { label: "Quantity", key: "items.0.quantity" },
-        { label: "Cost Price", key: "items.0.costPrice", type: "currency" },
-      ],
-    },
-    {
-      title: "Dates",
-      fields: [
-        { label: "Created", key: "createdAt", type: "date" },
-        { label: "Updated", key: "updatedAt", type: "date" },
+        { label: "Product", key: "items", type: "items" },
       ],
     },
   ],
 };
+;

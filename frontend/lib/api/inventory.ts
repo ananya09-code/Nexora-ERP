@@ -1,5 +1,4 @@
-import type { InventoryForm } from "@/hooks/use-inventory";
-import { InventoryFilters } from "@/hooks/use-inventory";
+import { InventoryFilters, InventoryForm, updateInventoryData } from "@/lib/types/inventorytype";
 export async function getInventory(filters?: InventoryFilters) {
   const params = new URLSearchParams();
 
@@ -42,24 +41,22 @@ export async function getInventory(filters?: InventoryFilters) {
   }
 }
 
-export async function updateInventory(data: InventoryForm) {
-  try {
-    const response = await fetch("/api/inventory", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
 
-    if (!response.ok) {
-      throw new Error("Failed to update inventory");
-    }
 
-    return response.json();
-  } catch (error) {
+export async function updateInventory(data: updateInventoryData) {
+  const id = data?.id
+  const res = await fetch(`/api/inventory/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data.data),
+  })
+  if (!res.ok) {
     throw new Error("Failed to update inventory");
   }
+
+  return res.json();
 }
 export async function getInventorySummary() {
   const response = await fetch("/api/inventory/summary");

@@ -1,27 +1,20 @@
 "use client";
-
 import {
   useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-
-
 import {
   getCustomers,
   createCustomer,
-  CustomerForm,
+  updateCustomer,
 } from "@/lib/api/customer";
 
-export type CustomerFilters = {
-  search?: string;
-  customerId?: string;
-  email?: string;
-  createdAt?:
-  string;
-  page?: number | string;
-  limit?: number | string;
-};
+import { CustomerFilters, CustomerForm, updateCustomerData } from "@/lib/types/customertype";
+
+
+
+
 
 // GET CUSTOMERS
 
@@ -64,4 +57,11 @@ export function useCreateCustomer() {
 
   });
 
+}
+export function useUpdateCustomer() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (newdata: updateCustomerData) => updateCustomer(newdata),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['customers'] }) }
+  })
 }

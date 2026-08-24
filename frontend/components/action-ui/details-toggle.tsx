@@ -1,5 +1,5 @@
 
-import { productDetails, customerDetails, saleDetails, purchaseDetails, inventoryDetails, supplierDetails } from "@/lib/edit-data";
+import { productDetails, customerDetails, saleDetails, purchaseDetails, inventoryDetails, supplierDetails } from "@/lib/details-data";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,

@@ -7,22 +7,12 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-
+import { SupplierFilters, SupplierForm, updateSupplierData } from "@/lib/types/suppliertype";
 import {
   getSuppliers,
   createSupplier,
-  SupplierForm,
+  updateSupplier,
 } from "@/lib/api/supplier";
-export type SupplierFilters = {
-  search?: string;
-  suppliersId?: string;
-  email?: string;
-  createdAt?: string;
-  page?: number;
-  limit?: number;
-};
-
-
 // GET SUPPLIERS
 
 export function useSuppliers(filters?: SupplierFilters) {
@@ -66,4 +56,11 @@ export function useCreateSupplier() {
 
   });
 
+}
+export function useUpdateSupplier() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (newdata: updateSupplierData) => updateSupplier(newdata),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['suppliers'] }) }
+  })
 }

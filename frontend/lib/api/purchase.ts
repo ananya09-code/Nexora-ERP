@@ -1,48 +1,6 @@
 
-export type Purchase = {
-  id: string;
-  supplierId: string;
-  totalAmount: number;
-  status: string;
-  createdAt: string;
 
-  supplier: {
-    name: string;
-  };
-
-  items: {
-    id: string;
-    quantity: number;
-    costPrice: number;
-
-    product: {
-      name: string;
-    };
-
-  }[];
-};
-
-
-export type PurchaseForm = {
-
-  supplierId: string;
-
-
-  items: {
-
-    productId: string;
-
-    quantity: number;
-
-    costPrice: number;
-
-  }[];
-
-};
-
-import { PurchaseFilters } from "@/hooks/use-purchase";
-
-
+import { PurchaseForm, Purchase, PurchaseFilters, updatePurchaseData } from "@/lib/types/purchasetype";
 
 // Get all purchases
 
@@ -147,4 +105,20 @@ export async function createPurchase(
 
   return result;
 
+}
+
+export async function updatePurchase(data: updatePurchaseData) {
+  const id = data?.id
+  const res = await fetch(`/api/purchases/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data.data),
+  })
+  if (!res.ok) {
+    throw new Error("Failed to update purchase");
+  }
+
+  return res.json();
 }

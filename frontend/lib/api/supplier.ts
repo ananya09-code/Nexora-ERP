@@ -1,22 +1,7 @@
-export type Supplier = {
-  id: string;
-  name: string;
-  contactPerson: string | null;
-  email: string | null;
-  phone: string | null;
-  address: string | null;
-};
+import { SupplierForm, SupplierFilters, Supplier, updateSupplierData } from "@/lib/types/suppliertype";
 
 
-export type SupplierForm = {
-  name: string;
-  contactPerson?: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-};
 
-import { SupplierFilters } from "@/hooks/use-supplier";
 
 // GET SUPPLIERS
 
@@ -97,4 +82,20 @@ export async function createSupplier(
 
   return result;
 
+}
+
+export async function updateSupplier(data: updateSupplierData) {
+  const id = data?.id
+  const res = await fetch(`/api/suppliers/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data.data),
+  })
+  if (!res.ok) {
+    throw new Error("Failed to update supplier");
+  }
+
+  return res.json();
 }

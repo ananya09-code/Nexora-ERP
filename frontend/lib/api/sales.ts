@@ -1,16 +1,5 @@
 
-export interface SaleItem {
-  productId: string;
-  quantity: number;
-  price: number;
-}
-
-export interface Sales {
-  customerId: string;
-  status: string;
-  item: SaleItem[];
-}
-import { SaleFilters } from "@/hooks/use-sales";
+import { Sales, SaleFilters, updateSaleData } from "@/lib/types/salestype";
 export async function getSales(filters: SaleFilters) {
   const params = new URLSearchParams();
 
@@ -74,4 +63,19 @@ export async function CreateSale(data: Sales) {
 
     )
   }
+}
+export async function updateSale(data: updateSaleData) {
+  const id = data?.id
+  const res = await fetch(`/api/sales/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data.data),
+  })
+  if (!res.ok) {
+    throw new Error("Failed to update Sale");
+  }
+
+  return res.json();
 }
