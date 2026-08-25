@@ -83,3 +83,15 @@ export async function updateProduct(data: updateProductData) {
 
   return res.json();
 }
+export async function deleteProduct(id: string) {
+  const response = await fetch(`/api/products/${id}/archive`, {
+    method: "PATCH",
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "Failed to archive product");
+  }
+  return response.json();
+}
+

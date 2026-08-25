@@ -8,6 +8,7 @@ import {
   getCustomers,
   createCustomer,
   updateCustomer,
+  deleteCustomer,
 } from "@/lib/api/customer";
 
 import { CustomerFilters, CustomerForm, updateCustomerData } from "@/lib/types/customertype";
@@ -64,4 +65,17 @@ export function useUpdateCustomer() {
     mutationFn: (newdata: updateCustomerData) => updateCustomer(newdata),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['customers'] }) }
   })
+}
+export function useDeleteCustomer() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => deleteCustomer(id),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["customers"],
+      });
+    },
+  });
 }

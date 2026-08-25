@@ -1,6 +1,5 @@
-
+"use client";
 import { productDetails, customerDetails, saleDetails, purchaseDetails, inventoryDetails, supplierDetails } from "@/lib/details-data";
-import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -34,7 +33,6 @@ export function DetailsToggle({
   const getValue = (obj: any, path: string) => {
     return path.split(".").reduce((value, key) => value?.[key], obj);
   };
-  console.log(data)
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="min-w-5xl max-h-[90vh] overflow-y-auto">
@@ -52,7 +50,7 @@ export function DetailsToggle({
         </DialogHeader>
         {
           details?.sections.map((section: any, index: any) => (
-            <div>
+            <div key={section.title}>
 
               <h3 className="font-semibold mb-3">
                 {section.title}
@@ -63,7 +61,7 @@ export function DetailsToggle({
                   const value = getValue(data, field.key);
                   return (
 
-                    <div>
+                    <div key={field.key} >
                       <p className="text-sm text-muted-foreground">
                         {field.label}
                       </p>

@@ -99,3 +99,15 @@ export async function updateSupplier(data: updateSupplierData) {
 
   return res.json();
 }
+export async function deleteSupplier(id: string) {
+  const response = await fetch(`/api/suppliers/${id}/archive`, {
+    method: "PATCH",
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "Failed to archive customer");
+  }
+  return response.json();
+}
+

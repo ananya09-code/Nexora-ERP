@@ -1,10 +1,10 @@
 "use client";
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createProduct,
   getProducts,
   updateProduct,
+  deleteProduct,
 } from "@/lib/api/products";
 import { ProductFilters, ProductForm, updateProductData } from "@/lib/types/producttype";
 export function useProducts(filters?: ProductFilters) {
@@ -32,4 +32,17 @@ export function useUpdateProduct() {
     mutationFn: (newdata: updateProductData) => updateProduct(newdata),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['products'] }) }
   })
+}
+export function useDeleteProduct() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => deleteProduct(id),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["products"],
+      });
+    },
+  });
 }

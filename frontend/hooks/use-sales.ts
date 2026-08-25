@@ -1,3 +1,4 @@
+"use clinet";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getSales, CreateSale, updateSale } from "@/lib/api/sales"
 import { SaleFilters, Sales, updateSaleData } from "@/lib/types/salestype"

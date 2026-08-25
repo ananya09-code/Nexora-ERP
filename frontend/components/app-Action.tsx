@@ -1,6 +1,8 @@
 "use client";
-
+import { DeleteToggle } from "@/components/action-ui/delete-toggle";
 import { useState } from "react";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +10,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Eye } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { DetailsToggle } from "@/components/action-ui/details-toggle";
 import { DetailsTypeKey } from "@/components/action-ui/details-toggle";
 import { EditToggle } from "@/components/action-ui/edit-toggle";
@@ -21,6 +22,7 @@ export function AppAction({ data, settype }: AppActionProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const handleDetails = () => {
     setMenuOpen(false);
     setTimeout(() => {
@@ -33,13 +35,22 @@ export function AppAction({ data, settype }: AppActionProps) {
       setEditOpen(true);
     }, 0);
   }
+  const handleDelete = () => {
+    setMenuOpen(false);
+    setTimeout(() => {
+      setDeleteOpen(true);
+    }, 0);
+  }
   return (
     <>
       <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
-        <DropdownMenuTrigger >
-          <Button variant="ghost" size="icon">
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
+        <DropdownMenuTrigger className={cn(
+          buttonVariants({
+            variant: "ghost",
+            size: "icon",
+          })
+        )}>
+          <MoreHorizontal className="h-4 w-4" />
         </DropdownMenuTrigger>
 
         <DropdownMenuContent side="left" align="start">
@@ -52,12 +63,17 @@ export function AppAction({ data, settype }: AppActionProps) {
             Edit
           </DropdownMenuItem>
 
-          <DropdownMenuItem className="text-destructive">
+          <DropdownMenuItem onClick={handleDelete} className="text-destructive">
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
+      <DeleteToggle
+        data={data}
+        deleteOpen={deleteOpen}
+        selectedtype={settype}
+        setDeleteOpen={setDeleteOpen}
+      />
       <DetailsToggle
         data={data}
         open={detailsOpen}
@@ -67,6 +83,7 @@ export function AppAction({ data, settype }: AppActionProps) {
       <EditToggle
         data={data}
         open={editOpen}
+
         datatype={settype}
         onOpenChange={setEditOpen} /> </>
   );

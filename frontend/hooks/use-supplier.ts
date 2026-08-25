@@ -12,6 +12,7 @@ import {
   getSuppliers,
   createSupplier,
   updateSupplier,
+  deleteSupplier,
 } from "@/lib/api/supplier";
 // GET SUPPLIERS
 
@@ -63,4 +64,17 @@ export function useUpdateSupplier() {
     mutationFn: (newdata: updateSupplierData) => updateSupplier(newdata),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['suppliers'] }) }
   })
+}
+export function useDeleteSupplier() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => deleteSupplier(id),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["suppliers"],
+      });
+    },
+  });
 }

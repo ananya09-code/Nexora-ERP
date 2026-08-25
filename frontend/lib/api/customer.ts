@@ -86,3 +86,15 @@ export async function createCustomer(
 
   return res.json();
 }
+export async function deleteCustomer(id: string) {
+  const response = await fetch(`/api/customers/${id}/archive`, {
+    method: "PATCH",
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "Failed to archive customer");
+  }
+  return response.json();
+}
+

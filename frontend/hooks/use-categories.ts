@@ -1,7 +1,7 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 export type Category = {
   id: string;
   name: string;
@@ -23,3 +23,17 @@ export function useCategories() {
     queryFn: getCategories,
   });
 }
+export function useDeleteCategory() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => deleteCategory(id),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+    },
+  });
+}
+

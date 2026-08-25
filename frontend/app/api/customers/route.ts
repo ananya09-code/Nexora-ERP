@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     const where = {
+      isActive: true,
       ...(customerId && {
         id: customerId,
       }),
