@@ -133,11 +133,11 @@ export async function GET() {
     ]);
 
     // Calculate total inventory valuation based on unit cost price (fallback to price)
-    const inventoryValuation = allInventory.reduce((acc, item) => {
+
+    const inventoryValuation = allInventory.reduce((acc: number, item) => {
       const unitValue = item.product.costPrice ?? item.product.price ?? 0;
       return acc + item.quantity * unitValue;
     }, 0);
-
     const totalStockUnits = allInventory.reduce(
       (acc, item) => acc + item.quantity,
       0
