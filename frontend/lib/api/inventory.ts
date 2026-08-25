@@ -58,12 +58,25 @@ export async function updateInventory(data: updateInventoryData) {
 
   return res.json();
 }
+export async function adjustInventory(data: { productId: string; adjustment: number; reason?: string; notes?: string }) {
+  const res = await fetch("/api/inventory", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    throw new Error("Failed to adjust inventory");
+  }
+  return res.json();
+}
+
 export async function getInventorySummary() {
   const response = await fetch("/api/inventory/summary");
   if (!response.ok) {
     throw new Error("Failed to fetch summary");
-
-
   }
   return response.json();
 }
+

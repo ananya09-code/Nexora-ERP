@@ -55,17 +55,17 @@ export function AddPurchase() {
 
   // suppliers
   const {
-    data: suppliers = [],
+    data: suppliers,
     isLoading: supplierLoading,
   } = useSuppliers();
-
-
+  const supplierList = (Array.isArray(suppliers) ? suppliers : (suppliers as any)?.data) ?? [];
 
   // products
   const {
-    data: products = [],
+    data: products,
     isLoading: productLoading,
   } = useProducts();
+  const productList = (Array.isArray(products) ? products : (products as any)?.data) ?? [];
 
 
   const {
@@ -294,29 +294,15 @@ export function AddPurchase() {
 
 
                         :
-
-
-                        suppliers.map((supplier) => (
-
-
+                        supplierList.map((supplier: any) => (
                           <SelectItem
-
                             key={supplier.id}
-
                             value={supplier.id}
-
                           >
-
                             {supplier.name}
-
                           </SelectItem>
-
-
                         ))
-
                     }
-
-
                   </SelectContent>
 
 
@@ -385,29 +371,15 @@ export function AddPurchase() {
 
 
                         :
-
-
-                        products.map((product) => (
-
-
+                        productList.map((product: any) => (
                           <SelectItem
-
                             key={product.id}
-
                             value={product.id}
-
                           >
-
                             {product.name}
-
                           </SelectItem>
-
-
                         ))
-
                     }
-
-
                   </SelectContent>
 
 

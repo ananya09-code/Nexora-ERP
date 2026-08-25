@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { useState } from "react";
-import { useUpdateInventory } from "@/hooks/use-inventory";
+import { useAdjustInventory } from "@/hooks/use-inventory";
 
 import { CheckCircle, XCircle } from "lucide-react";
 
@@ -41,7 +41,7 @@ export function AdjustInventory({
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
 
-  const updateinventory = useUpdateInventory();
+  const updateinventory = useAdjustInventory();
 
   const {
     register,

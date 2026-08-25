@@ -15,6 +15,7 @@ import {
   purchaseEdit,
   saleEdit,
   inventoryEdit,
+  categoryEdit,
 } from "@/lib/edit-data";
 
 
@@ -59,6 +60,7 @@ const EditType = {
   purchase: purchaseEdit,
   inventory: inventoryEdit,
   supplier: supplierEdit,
+  category: categoryEdit,
 };
 import { DetailsTypeKey } from "./details-toggle";
 export type EditTypeKey = keyof typeof EditType;

@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCircle, XCircle } from "lucide-react";
-import type { Product } from "@/lib/api/products";
+import type { Product } from "@/lib/types/producttype";
 import {
   Dialog,
   DialogContent,
@@ -38,8 +38,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-
-import type { Sales } from "@/lib/api/sales";
+import type { Sales } from "@/lib/types/salestype";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";

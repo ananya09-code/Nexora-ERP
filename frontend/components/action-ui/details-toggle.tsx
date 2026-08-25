@@ -1,5 +1,5 @@
 "use client";
-import { productDetails, customerDetails, saleDetails, purchaseDetails, inventoryDetails, supplierDetails } from "@/lib/details-data";
+import { productDetails, customerDetails, saleDetails, purchaseDetails, inventoryDetails, supplierDetails, categoryDetails } from "@/lib/details-data";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +14,8 @@ const DetailsType = {
   purchase: purchaseDetails,
   inventory: inventoryDetails,
   supplier: supplierDetails,
-}
+  category: categoryDetails,
+};
 export type DetailsTypeKey = keyof typeof DetailsType;
 
 type DetailsToggleProps = {

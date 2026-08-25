@@ -45,6 +45,8 @@ export function DeleteToggle({
 
 
 
+  const deleteCategory = useDeleteCategory();
+
   const handleType = (selectedtype: string) => {
     switch (selectedtype) {
       case "product":
@@ -53,7 +55,8 @@ export function DeleteToggle({
         return deleteCustomer;
       case "supplier":
         return deleteSupplier;
-
+      case "category":
+        return deleteCategory;
       default:
         return null;
     }
