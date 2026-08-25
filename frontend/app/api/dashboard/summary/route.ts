@@ -24,22 +24,45 @@ export async function GET() {
     ] = await Promise.all([
       // Sales KPIs
       prisma.sale.count(),
+
       prisma.sale.aggregate({
-        _sum: { totalAmount: true },
+        _sum: {
+          totalAmount: true,
+        },
       }),
+
       prisma.saleItem.aggregate({
-        _sum: { quantity: true },
+        _sum: {
+          quantity: true,
+        },
       }),
 
       // Entities
-      prisma.customer.count({ where: { isActive: true } }),
-      prisma.supplier.count({ where: { isActive: true } }),
-      prisma.product.count({ where: { isActive: true } }),
+      prisma.customer.count({
+        where: {
+          isActive: true,
+        },
+      }),
+
+      prisma.supplier.count({
+        where: {
+          isActive: true,
+        },
+      }),
+
+      prisma.product.count({
+        where: {
+          isActive: true,
+        },
+      }),
 
       // Procurement
       prisma.purchase.count(),
+
       prisma.purchase.aggregate({
-        _sum: { totalAmount: true },
+        _sum: {
+          totalAmount: true,
+        },
       }),
 
       // Stock health counts
@@ -51,6 +74,7 @@ export async function GET() {
           },
         },
       }),
+
       prisma.inventory.count({
         where: {
           quantity: {
@@ -75,7 +99,9 @@ export async function GET() {
       // Recent 5 sales with customer and line items
       prisma.sale.findMany({
         take: 5,
-        orderBy: { createdAt: "desc" },
+        orderBy: {
+          createdAt: "desc",
+        },
         include: {
           customer: true,
           items: {
@@ -89,10 +115,14 @@ export async function GET() {
       // Low stock urgent alerts
       prisma.inventory.findMany({
         where: {
-          quantity: { lte: 10 },
+          quantity: {
+            lte: 10,
+          },
         },
         take: 6,
-        orderBy: { quantity: "asc" },
+        orderBy: {
+          quantity: "asc",
+        },
         include: {
           product: {
             include: {
@@ -107,7 +137,9 @@ export async function GET() {
         take: 6,
         include: {
           _count: {
-            select: { products: true },
+            select: {
+              products: true,
+            },
           },
         },
         orderBy: {
@@ -120,7 +152,9 @@ export async function GET() {
       // Recent 5 purchases
       prisma.purchase.findMany({
         take: 5,
-        orderBy: { createdAt: "desc" },
+        orderBy: {
+          createdAt: "desc",
+        },
         include: {
           supplier: true,
           items: {
@@ -132,14 +166,32 @@ export async function GET() {
       }),
     ]);
 
-    // Calculate total inventory valuation based on unit cost price (fallback to price)
+    // Calculate total inventory valuation
+    // Uses costPrice first, then falls back to selling price.
+    const inventoryValuation = allInventory.reduce(
+      (
+        acc: number,
+        item: {
+          quantity: number;
+          product: {
+            price: number | null;
+            costPrice: number | null;
+          };
+        }
+      ) => {
+        const unitValue =
+          item.product.costPrice ?? item.product.price ?? 0;
 
-    const inventoryValuation = allInventory.reduce((acc: number, item) => {
-      const unitValue = item.product.costPrice ?? item.product.price ?? 0;
-      return acc + item.quantity * unitValue;
-    }, 0);
+        return acc + item.quantity * unitValue;
+      },
+      0
+    );
+
+    // Calculate total number of units currently in inventory
     const totalStockUnits = allInventory.reduce(
-      (acc, item) => acc + item.quantity,
+      (acc: number, item: { quantity: number }) => {
+        return acc + item.quantity;
+      },
       0
     );
 
@@ -158,6 +210,7 @@ export async function GET() {
         totalStockUnits,
         inventoryValuation,
       },
+
       recentSales,
       lowStockItems,
       topCategories,
@@ -165,9 +218,16 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Dashboard summary API error:", error);
+
     return NextResponse.json(
-      { error: "Failed to fetch dashboard summary", details: String(error) },
-      { status: 500 }
+      {
+        error: "Failed to fetch dashboard summary",
+        details: String(error),
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
+
