@@ -1,13 +1,13 @@
 # Nexora ERP
 
-Nexora ERP is a modern full-stack ERP application designed to help businesses manage products, inventory, and day-to-day operations through a centralized platform.
+A modern full-stack ERP application designed to help businesses manage products, inventory, and day-to-day operations through a centralized platform.
 
-Built with Next.js and TypeScript, the application combines a responsive user interface with PostgreSQL, Prisma, and secure authentication.
+**[🌐 Live Demo](https://nexora-erp-zgd7.vercel.app/)**
 
 ## 🚀 Features
 
 * 🔐 User authentication and protected routes
-* 📊 Dashboard for business overview
+* 📊 Business dashboard
 * 📦 Inventory management
 * 🏷️ Product management
 * ✏️ Create and update products
@@ -40,7 +40,7 @@ Built with Next.js and TypeScript, the application combines a responsive user in
 
 ## 🏗️ Architecture
 
-Nexora uses a full-stack Next.js architecture where the frontend, server-side logic, authentication, and database integration work together within a single application.
+Nexora uses a full-stack Next.js architecture that connects the user interface, server-side logic, authentication, and database.
 
 ```text
 Next.js / React
@@ -54,22 +54,22 @@ PostgreSQL
 
 ## ⚙️ Getting Started
 
-### 1. Clone the repository
+### Clone the repository
 
 ```bash
 git clone https://github.com/ananya09-code/nexora-erp.git
 cd nexora-erp
 ```
 
-### 2. Install dependencies
+### Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Configure environment variables
+### Configure environment variables
 
-Create a `.env` file in the project root:
+Create a `.env` file:
 
 ```env
 DATABASE_URL="your_database_url"
@@ -77,36 +77,32 @@ BETTER_AUTH_SECRET="your_secret"
 BETTER_AUTH_URL="http://localhost:3000"
 ```
 
-### 4. Set up Prisma
+### Set up the database
 
 ```bash
 npx prisma generate
 npx prisma db push
 ```
 
-### 5. Start the application
+### Run the development server
 
 ```bash
 npm run dev
 ```
 
-The application will be available at:
-
-```text
-http://localhost:3000
-```
+Open `http://localhost:3000`.
 
 ## 🚀 Deployment
 
-Nexora is deployed using **Vercel**, with **PostgreSQL hosted on Neon**.
+The application is deployed on **Vercel** with **Neon PostgreSQL** as the production database.
 
-Production environment variables are configured through the deployment platform.
+**Live:** https://nexora-erp-zgd7.vercel.app/
 
 ## 📌 Project Status
 
 **Completed and deployed.**
 
-Nexora was built as a practical full-stack application to gain experience with modern web development, database design, authentication, responsive UI development, and production deployment.
+Nexora was built to gain practical experience with full-stack development, database design, authentication, responsive UI development, and production deployment.
 
 ## 👨‍💻 Author
 
@@ -114,4 +110,5 @@ Nexora was built as a practical full-stack application to gain experience with m
 
 Frontend-focused full-stack developer.
 
-[GitHub](https://github.com/ananya09-code) · [LinkedIn](https://linkedin.com/in/ananya-mangistu-445191348)
+**GitHub:** https://github.com/ananya09-code
+**LinkedIn:** https://linkedin.com/in/ananya-mangistu-445191348
